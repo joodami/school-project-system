@@ -1,21 +1,27 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwQgw70iqGZN1GHH8suQDnaPer-0sE6ZoiJVAOLLCwU9LC4qvHqt_STaNYItAP8UomNTg/exec"; 
 
-// ฟังก์ชันแสดงการแจ้งเตือนแบบ Toast
-function showToast(message, isSuccess = true) {
+// ฟังก์ชันแสดงการแจ้งเตือนแบบ Toast (สวยงามและไม่ขัดจังหวะ)
+function showNotification(message, isSuccess = true) {
     const toastEl = document.getElementById('liveToast');
     const toastMessage = document.getElementById('toastMessage');
+    
+    // ตั้งค่าข้อความ
     toastMessage.innerText = message;
     
-    if(!isSuccess) {
-        toastEl.classList.replace('bg-navy', 'bg-danger');
+    // ตั้งค่าสีตามสถานะ (Success = Navy/Green, Error = Red)
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-navy');
+    if (isSuccess) {
+        toastEl.classList.add('bg-navy'); // หรือใช้ 'bg-success' ถ้าต้องการสีเขียว
+        toastEl.style.backgroundColor = "#1a3a5f"; // สีน้ำเงินกรมท่าตามธีมโรงเรียน
     } else {
-        toastEl.classList.replace('bg-danger', 'bg-navy');
+        toastEl.classList.add('bg-danger');
     }
     
-    const toast = new bootstrap.Toast(toastEl);
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
 }
 
+// 1. ดึงข้อมูล Dashboard และตาราง
 async function fetchDashboardData() {
     try {
         const response = await fetch(API_URL);
@@ -42,7 +48,10 @@ async function fetchDashboardData() {
                     <td class="text-center">
                         <div class="btn-group">
                             <button class="btn btn-sm btn-outline-secondary">ดู PDF</button>
-                            ${!isDone ? `<button onclick="openReportModal('${project.Project_ID}', '${project.Project_Name}')" class="btn btn-sm btn-outline-navy ms-1" style="border: 1px solid #1a3a5f; color: #1a3a5f;">รายงาน</button>` : `<button class="btn btn-sm btn-light ms-1" disabled>เรียบร้อย</button>`}
+                            ${!isDone 
+                                ? `<button onclick="openReportModal('${project.Project_ID}', '${project.Project_Name}')" class="btn btn-sm btn-outline-navy ms-1" style="border: 1px solid #1a3a5f; color: #1a3a5f;">รายงาน</button>` 
+                                : `<button class="btn btn-sm btn-light ms-1" disabled text-muted>เรียบร้อย</button>`
+                            }
                         </div>
                     </td>
                 </tr>
@@ -51,9 +60,11 @@ async function fetchDashboardData() {
         });
     } catch (error) {
         console.error("Error:", error);
+        showNotification("ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการเชื่อมต่อ", false);
     }
 }
 
+// 2. เปิดหน้าต่างรายงาน
 function openReportModal(id, name) {
     document.getElementById('report_project_id').value = id;
     document.getElementById('report_project_name').value = name;
@@ -61,12 +72,12 @@ function openReportModal(id, name) {
     reportModal.show();
 }
 
-// ส่งข้อมูลโครงการใหม่
+// 3. บันทึกโครงการใหม่
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerText = "กำลังบันทึก...";
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึก...';
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
@@ -76,20 +87,25 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         const result = await res.text();
         if (result === "Success") {
-            showToast("เพิ่มโครงการใหม่เข้าสู่ระบบเรียบร้อยแล้วค่ะ");
+            showNotification("✅ เพิ่มโครงการใหม่เข้าสู่ระบบเรียบร้อยแล้วค่ะ");
+            e.target.reset();
+            bootstrap.Modal.getInstance(document.getElementById('addProjectModal')).hide();
             setTimeout(() => location.reload(), 1500);
         }
     } catch (error) {
-        showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", false);
+        showNotification("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ", false);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "บันทึกข้อมูลลงระบบ";
     }
 });
 
-// ส่งรายงานผล
+// 4. ส่งรายงานผลโครงการ
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('reportSubmitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerText = "กำลังส่งข้อมูล...";
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังส่งข้อมูล...';
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
@@ -109,14 +125,19 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
     try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         const result = await res.text();
+        
         if (result === "Report Success") {
-            showToast("ดำเนินการส่งรายงานผลโครงการเรียบร้อยแล้วค่ะ");
+            showNotification("✨ ดำเนินการส่งรายงานผลโครงการเรียบร้อยแล้วค่ะ");
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
             setTimeout(() => location.reload(), 1500);
         } else {
-            showToast("ตรวจพบข้อผิดพลาดจากระบบหลังบ้าน: " + result, false);
+            showNotification("ตรวจพบข้อผิดพลาด: " + result, false);
         }
     } catch (error) {
-        showToast("ไม่สามารถส่งรายงานได้ โปรดตรวจสอบอินเทอร์เน็ต", false);
+        showNotification("ไม่สามารถส่งรายงานได้ โปรดตรวจสอบอินเทอร์เน็ต", false);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "ส่งรายงานและบันทึกผล";
     }
 });
 
@@ -127,4 +148,5 @@ const toBase64 = file => new Promise((resolve, reject) => {
     reader.onerror = error => reject(error);
 });
 
+// เรียกทำงานครั้งแรก
 fetchDashboardData();
