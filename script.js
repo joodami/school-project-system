@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzLEbmdZl3JKzrxY6Jcmy6BkYLTYnj5Zkw66GVkSnMHeUbBsYm1QeDjkPmcarj2Umin1A/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbxBvJua6tTVGLb_Jyru7RCsX0NtFvyEksZQZvWrJFosL973pGo1Q2CDys06FkMd2JJiFg/exec"; 
 
 // ฟังก์ชันแสดงการแจ้งเตือนแบบ Toast (สวยงามและไม่ขัดจังหวะ)
 function showNotification(message, isSuccess = true) {
