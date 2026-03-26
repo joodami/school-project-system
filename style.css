@@ -1,35 +1,88 @@
+/* ตั้งค่า Font K2D ทั้งเว็บ */
+* {
+    font-family: 'K2D', sans-serif;
+}
+
 body {
-    font-family: 'Sarabun', sans-serif;
-    background-color: #fdfaf6; /* สีครีมอ่อน */
-    color: #4a4a4a;
+    background-color: #f4f7f9; /* สีพื้นหลังเทาฟ้าอ่อนสะอาดๆ */
+    color: #333;
 }
 
+/* สีน้ำเงินเข้มสไตล์ราชการ */
+.bg-navy {
+    background-color: #1a3a5f !important;
+}
+
+.table-navy {
+    background-color: #1a3a5f !important;
+    color: #ffffff !important;
+}
+
+.btn-navy {
+    background-color: #1a3a5f;
+    color: white;
+    border-radius: 4px;
+    padding: 8px 20px;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-navy:hover {
+    background-color: #0d2540;
+    color: white;
+}
+
+/* Dashboard Cards */
 .stat-card {
+    border-radius: 8px;
+    border-bottom: 3px solid #dee2e6;
+}
+
+.card-header {
+    border-bottom: 2px solid #1a3a5f;
+}
+
+/* ตาราง */
+.table {
+    font-size: 0.95rem;
+}
+
+.table thead th {
+    font-weight: 500;
+    padding: 15px;
     border: none;
-    border-radius: 15px;
-    background-color: #ffffff;
-    transition: transform 0.2s;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
+.table tbody td {
+    padding: 15px;
 }
 
-.btn-primary {
-    background-color: #a67c52; /* สีน้ำตาลไม้ */
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #8d6641;
-}
-
-.table thead {
-    background-color: #f2e9e1;
-}
-
+/* Badge สถานะ */
 .status-badge {
-    padding: 5px 12px;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 4px;
     font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.bg-success-subtle {
+    background-color: #d1e7dd !important;
+    color: #0f5132 !important;
+    border: 1px solid #badbcc;
+}
+
+.bg-warning-subtle {
+    background-color: #fff3cd !important;
+    color: #664d03 !important;
+    border: 1px solid #ffecb5;
+}
+
+/* Form Styling */
+.form-control:focus, .form-select:focus {
+    border-color: #1a3a5f;
+    box-shadow: 0 0 0 0.25rem rgba(26, 58, 95, 0.1);
+}
+
+label {
+    color: #1a3a5f;
 }
