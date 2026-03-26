@@ -1,18 +1,16 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbx0vPhDlmARSw5_0fTSGmtXM2ImBQvPh1T6Gsn-Qf_m6lHUS8rm_3mMkLdJ3ufKetCcCA/exec"; 
 
-// ฟังก์ชันแสดงการแจ้งเตือนแบบ Toast (สวยงามและไม่ขัดจังหวะ)
+// ฟังก์ชันแสดงการแจ้งเตือนแบบ Toast
 function showNotification(message, isSuccess = true) {
     const toastEl = document.getElementById('liveToast');
     const toastMessage = document.getElementById('toastMessage');
     
-    // ตั้งค่าข้อความ
     toastMessage.innerText = message;
     
-    // ตั้งค่าสีตามสถานะ (Success = Navy/Green, Error = Red)
     toastEl.classList.remove('bg-success', 'bg-danger', 'bg-navy');
     if (isSuccess) {
-        toastEl.classList.add('bg-navy'); // หรือใช้ 'bg-success' ถ้าต้องการสีเขียว
-        toastEl.style.backgroundColor = "#1a3a5f"; // สีน้ำเงินกรมท่าตามธีมโรงเรียน
+        toastEl.classList.add('bg-navy');
+        toastEl.style.backgroundColor = "#1a3a5f"; 
     } else {
         toastEl.classList.add('bg-danger');
     }
@@ -47,10 +45,12 @@ async function fetchDashboardData() {
                     <td><span class="status-badge ${statusClass}">${project.Status}</span></td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-outline-secondary">ดู PDF</button>
+                            <button onclick="viewPDF('${project.Project_ID}')" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </button>
                             ${!isDone 
                                 ? `<button onclick="openReportModal('${project.Project_ID}', '${project.Project_Name}')" class="btn btn-sm btn-outline-navy ms-1" style="border: 1px solid #1a3a5f; color: #1a3a5f;">รายงาน</button>` 
-                                : `<button class="btn btn-sm btn-light ms-1" disabled text-muted>เรียบร้อย</button>`
+                                : `<button class="btn btn-sm btn-light ms-1" disabled>เรียบร้อย</button>`
                             }
                         </div>
                     </td>
@@ -64,7 +64,26 @@ async function fetchDashboardData() {
     }
 }
 
-// 2. เปิดหน้าต่างรายงาน
+// 2. ฟังก์ชันออกรายงาน PDF และเปิดแท็บใหม่
+async function viewPDF(projectId) {
+    showNotification("⏳ กำลังสร้างเอกสาร PDF โปรดรอสักครู่...");
+    try {
+        // ส่งคำขอแบบ GET พร้อม parameter action=viewPDF
+        const response = await fetch(`${API_URL}?action=viewPDF&projectId=${projectId}`);
+        const pdfUrl = await response.text();
+        
+        if (pdfUrl.includes("http")) {
+            window.open(pdfUrl, '_blank'); // เปิดลิงก์ PDF ในหน้าต่างใหม่
+            showNotification("✅ สร้าง PDF สำเร็จ");
+        } else {
+            showNotification("❌ ตรวจพบข้อผิดพลาด: " + pdfUrl, false);
+        }
+    } catch (error) {
+        showNotification("❌ ไม่สามารถสร้าง PDF ได้ในขณะนี้", false);
+    }
+}
+
+// 3. เปิดหน้าต่างรายงาน
 function openReportModal(id, name) {
     document.getElementById('report_project_id').value = id;
     document.getElementById('report_project_name').value = name;
@@ -72,7 +91,7 @@ function openReportModal(id, name) {
     reportModal.show();
 }
 
-// 3. บันทึกโครงการใหม่
+// 4. บันทึกโครงการใหม่
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('submitBtn');
@@ -100,7 +119,7 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
     }
 });
 
-// 4. ส่งรายงานผลโครงการ
+// 5. ส่งรายงานผลโครงการ (ปรับปรุงให้เก็บค่า PDCA และหัวข้อใหม่)
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('reportSubmitBtn');
@@ -110,6 +129,7 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
+    // จัดการรูปภาพ
     const fileInput = document.getElementById('photoFiles');
     const photoData = [];
     if(fileInput.files.length > 0) {
