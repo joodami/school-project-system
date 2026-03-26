@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzYZUSi1BinLjvo2BDTp16fYHzvi4_rU6ZeKBagfnPOjd9qq66ZBrVm4-nQCBy6H2N7/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbzf9bCleik7TjDNK9Xp5pnzr9kur5ZKHzC5UujEBSWaaavlin9ItSK0J9XpaJyvx8Ev2w/exec"; 
 
 // ฟังก์ชันแปลงไฟล์เป็น Base64 (ปรับปรุงให้เสถียรขึ้น)
 const toBase64 = file => new Promise((resolve, reject) => {
