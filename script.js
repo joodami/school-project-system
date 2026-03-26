@@ -75,6 +75,7 @@ async function fetchDashboardData() {
 async function viewPDF(projectId) {
     showNotification("⏳ กำลังสร้างเอกสาร PDF โปรดรอสักครู่...");
     try {
+        // ส่ง action=viewPDF และ projectId ไปยัง Apps Script
         const response = await fetch(`${API_URL}?action=viewPDF&projectId=${projectId}`);
         const pdfUrl = await response.text();
         
@@ -82,10 +83,11 @@ async function viewPDF(projectId) {
             window.open(pdfUrl, '_blank');
             showNotification("✅ สร้าง PDF สำเร็จ");
         } else {
-            showNotification("❌ ตรวจพบข้อผิดพลาด: " + pdfUrl, false);
+            // กรณีคอลัมน์ PDF ว่างหรือยังไม่ได้ทำรายงาน
+            showNotification("❌ " + pdfUrl, false);
         }
     } catch (error) {
-        showNotification("❌ ไม่สามารถสร้าง PDF ได้ในขณะนี้", false);
+        showNotification("❌ ไม่สามารถเปิด PDF ได้ในขณะนี้", false);
     }
 }
 
