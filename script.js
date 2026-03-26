@@ -84,3 +84,65 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
 
 // เรียกใช้งานเมื่อโหลดหน้าเว็บ
 fetchDashboardData();
+
+// ฟังก์ชันสำหรับเปิด Modal รายงานและส่ง ID โครงการเข้าไป
+function openReportModal(id, name) {
+    document.getElementById('report_project_id').value = id;
+    document.getElementById('report_project_name').value = name;
+    const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+    modal.show();
+}
+
+// ปรับปรุงฟังก์ชัน fetchDashboardData ในส่วนของปุ่ม "รายงาน" ให้เรียกใช้ฟังก์ชันด้านบน
+// (ในส่วนที่สร้างแถวตารางให้แก้ไขปุ่มรายงานเป็นดังนี้:)
+// <button onclick="openReportModal('${project.Project_ID}', '${project.Project_Name}')" class="btn btn-sm btn-outline-navy ms-1">รายงาน</button>
+
+document.getElementById('reportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById('reportSubmitBtn');
+    submitBtn.innerText = "กำลังอัปโหลดรูปและบันทึก...";
+    submitBtn.disabled = true;
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    // จัดการไฟล์รูปภาพ (แปลงเป็น Base64)
+    const fileInput = document.getElementById('photoFiles');
+    const files = fileInput.files;
+    const photoData = [];
+
+    for (let i = 0; i < files.length; i++) {
+        const base64 = await toBase64(files[i]);
+        photoData.push({
+            base64: base64.split(',')[1],
+            type: files[i].type,
+            name: files[i].name
+        });
+    }
+
+    data.photos = photoData;
+    data.action = "submitReport";
+
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        alert("ส่งรายงานเรียบร้อยแล้วค่ะ ✨");
+        location.reload();
+    } catch (error) {
+        console.error(error);
+        alert("เกิดข้อผิดพลาดในการส่งรายงาน");
+    } finally {
+        submitBtn.innerText = "ส่งรายงานและบันทึกผล";
+        submitBtn.disabled = false;
+    }
+});
+
+// Helper Function: แปลงไฟล์เป็น Base64
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});
