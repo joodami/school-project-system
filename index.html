@@ -3,120 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจัดการโครงการโรงเรียน - พิมานพิทยาสรรค์</title>
+    <title>ระบบบริหารจัดการโครงการ - โรงเรียนพิมานพิทยาสรรค์</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=K2D:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <header class="text-center mb-5">
-            <h1 class="fw-bold">ระบบบริหารจัดการโครงการ</h1>
-            <p class="text-muted">โรงเรียนพิมานพิทยาสรรค์ จังหวัดสตูล</p>
+    <div class="container-fluid py-4 px-md-5">
+        <header class="text-center mb-5 border-bottom pb-4">
+            <h1 class="fw-bold text-dark">ระบบบริหารจัดการโครงการประจำปี</h1>
+            <h4 class="text-secondary">โรงเรียนพิมานพิทยาสรรค์ จังหวัดสตูล</h4>
         </header>
 
-        <div class="row mb-4 text-center">
-            <div class="col-md-3">
-                <div class="card stat-card shadow-sm">
+        <div class="row mb-5 text-center g-3">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card shadow-sm border-0 bg-white">
                     <div class="card-body">
-                        <h6>โครงการทั้งหมด</h6>
-                        <h2 id="totalProjects">-</h2>
+                        <h6 class="text-muted">โครงการทั้งหมด</h6>
+                        <h2 id="totalProjects" class="fw-bold">-</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card shadow-sm border-success">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card shadow-sm border-0 bg-white border-start border-primary border-4">
                     <div class="card-body">
-                        <h6>รายงานแล้ว</h6>
-                        <h2 id="reportedCount" class="text-success">-</h2>
+                        <h6 class="text-muted">รายงานแล้ว</h6>
+                        <h2 id="reportedCount" class="text-primary fw-bold">-</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card shadow-sm border-warning">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card shadow-sm border-0 bg-white border-start border-warning border-4">
                     <div class="card-body">
-                        <h6>รอดำเนินการ</h6>
-                        <h2 id="pendingCount" class="text-warning">-</h2>
+                        <h6 class="text-muted">รอดำเนินการ</h6>
+                        <h2 id="pendingCount" class="text-warning fw-bold">-</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card shadow-sm">
+            <div class="col-6 col-md-3">
+                <div class="card stat-card shadow-sm border-0 bg-white">
                     <div class="card-body">
-                        <h6>งบประมาณรวม</h6>
-                        <h2 id="totalBudget">-</h2>
+                        <h6 class="text-muted">งบประมาณรวม (บาท)</h6>
+                        <h2 id="totalBudget" class="fw-bold">-</h2>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow-sm p-4 mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold">รายการโครงการประจำปี ๒๕๖๙</h4>
-                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-                    เพิ่มโครงการใหม่ +
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-list-task"></i> รายการโครงการและกิจกรรม</h5>
+                <button class="btn btn-navy shadow-sm" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+                    + เพิ่มโครงการใหม่
                 </button>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ชื่อโครงการ/กิจกรรม</th>
-                            <th>กลุ่มงาน/สาระ</th>
-                            <th>งบประมาณ</th>
-                            <th>สถานะ</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="projectTableBody">
-                        </tbody>
-                </table>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-navy">
+                            <tr>
+                                <th class="ps-4">ชื่อโครงการ/กิจกรรม</th>
+                                <th>หน่วยงานที่รับผิดชอบ</th>
+                                <th>งบประมาณ</th>
+                                <th>สถานะการรายงาน</th>
+                                <th class="text-center">การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projectTableBody">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="addProjectModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg border-0">
-            <div class="modal-content rounded-4 shadow-lg border-0">
-                <div class="modal-header border-0 bg-light p-4">
-                    <h5 class="modal-title fw-bold">บันทึกขออนุมัติโครงการใหม่</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-navy text-white">
+                    <h5 class="modal-title fw-bold">แบบฟอร์มบันทึกข้อมูลโครงการใหม่</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="projectForm">
                         <div class="row g-3">
                             <div class="col-md-12">
-                                <label class="form-label fw-semibold">ชื่อโครงการ/กิจกรรม</label>
-                                <input type="text" class="form-control bg-light border-0 p-2" name="Project_Name" required placeholder="เช่น โครงการพัฒนาศักยภาพการจัดการเรียนรู้...">
+                                <label class="form-label fw-bold">ชื่อโครงการ / กิจกรรมสำคัญ</label>
+                                <input type="text" class="form-control" name="Project_Name" required placeholder="ระบุชื่อโครงการตามแผนปฏิบัติราชการ">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">กลุ่มที่รับผิดชอบ</label>
-                                <select class="form-select bg-light border-0" name="Department" required>
+                                <label class="form-label fw-bold">กลุ่มบริหาร/ฝ่าย</label>
+                                <select class="form-select" name="Department" required>
+                                    <option value="" disabled selected>เลือกหน่วยงาน</option>
                                     <option value="สำนักงานอำนวยการ">สำนักงานอำนวยการ</option>
                                     <option value="กลุ่มบริหารงบประมาณ">กลุ่มบริหารงบประมาณ</option>
                                     <option value="กลุ่มสาระฯ วิทยาศาสตร์">กลุ่มสาระฯ วิทยาศาสตร์</option>
                                     <option value="กลุ่มสาระฯ คณิตศาสตร์">กลุ่มสาระฯ คณิตศาสตร์</option>
+                                    <option value="กลุ่มสาระฯ ภาษาไทย">กลุ่มสาระฯ ภาษาไทย</option>
+                                    <option value="กลุ่มสาระฯ ภาษาต่างประเทศ">กลุ่มสาระฯ ภาษาต่างประเทศ</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">ประเภทงาน</label>
-                                <select class="form-select bg-light border-0" name="Type" required>
+                                <label class="form-label fw-bold">ประเภทโครงการ</label>
+                                <select class="form-select" name="Type" required>
                                     <option value="กลุ่มงาน">กลุ่มงาน</option>
                                     <option value="กลุ่มสาระ">กลุ่มสาระ</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">งบประมาณ (บาท)</label>
-                                <input type="number" class="form-control bg-light border-0" name="Budget_Total" required placeholder="0.00">
+                                <label class="form-label fw-bold">งบประมาณที่ได้รับอนุมัติ (บาท)</label>
+                                <input type="number" class="form-control" name="Budget_Total" required placeholder="0.00">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">ผู้เสนอโครงการ</label>
-                                <input type="text" class="form-control bg-light border-0" name="Responsible_Person" required placeholder="ระบุชื่อ-นามสกุล">
+                                <label class="form-label fw-bold">ผู้รับผิดชอบโครงการ</label>
+                                <input type="text" class="form-control" name="Responsible_Person" required placeholder="ชื่อ-นามสกุล">
                             </div>
                         </div>
-                        <div class="text-end mt-4">
-                            <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">ยกเลิก</button>
-                            <button type="submit" id="submitBtn" class="btn btn-primary px-4 shadow-sm">บันทึกข้อมูล</button>
+                        <div class="text-end mt-4 pt-3 border-top">
+                            <button type="button" class="btn btn-outline-secondary px-4 me-2" data-bs-dismiss="modal">ยกเลิก</button>
+                            <button type="submit" id="submitBtn" class="btn btn-navy px-5">บันทึกข้อมูลลงระบบ</button>
                         </div>
                     </form>
                 </div>
