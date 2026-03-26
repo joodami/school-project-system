@@ -1,13 +1,29 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbzYZUSi1BinLjvo2BDTp16fYHzvi4_rU6ZeKBagfnPOjd9qq66ZBrVm4-nQCBy6H2N7/exec"; 
 
+// ฟังก์ชันแปลงไฟล์เป็น Base64 (ปรับปรุงให้เสถียรขึ้น)
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+        const result = reader.result;
+        // แยกเอาเฉพาะส่วนข้อมูล Base64 หลังเครื่องหมาย ,
+        if (result.includes(',')) {
+            resolve(result.split(',')[1]);
+        } else {
+            resolve(result);
+        }
+    };
+    reader.onerror = error => reject(error);
+});
+
 // ฟังก์ชันแสดงการแจ้งเตือนแบบ Toast
 function showNotification(message, isSuccess = true) {
     const toastEl = document.getElementById('liveToast');
     const toastMessage = document.getElementById('toastMessage');
     
     toastMessage.innerText = message;
-    
     toastEl.classList.remove('bg-success', 'bg-danger', 'bg-navy');
+    
     if (isSuccess) {
         toastEl.classList.add('bg-navy');
         toastEl.style.backgroundColor = "#1a3a5f"; 
@@ -37,7 +53,6 @@ async function fetchDashboardData() {
             const isDone = project.Status === 'รายงานแล้ว';
             const statusClass = isDone ? 'bg-success-subtle' : 'bg-warning-subtle';
             
-            // ตรวจสอบลิงก์ไฟล์โครงการต้นฉบับ (คอลัมน์ที่ 13)
             const fileUrl = project.Project_File_URL || ""; 
             const fileBtn = fileUrl 
                 ? `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary ms-1" title="ดูไฟล์โครงการต้นฉบับ"><i class="bi bi-file-earmark-arrow-down"></i> ไฟล์แนบ</a>` 
@@ -66,28 +81,24 @@ async function fetchDashboardData() {
             tableBody.innerHTML += row;
         });
     } catch (error) {
-        console.error("Error:", error);
-        showNotification("ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการเชื่อมต่อ", false);
+        console.error("Error fetching data:", error);
     }
 }
 
-// 2. ฟังก์ชันออกรายงาน PDF และเปิดแท็บใหม่
+// 2. ฟังก์ชันดู PDF รายงานผล
 async function viewPDF(projectId) {
-    showNotification("⏳ กำลังสร้างเอกสาร PDF โปรดรอสักครู่...");
+    showNotification("⏳ กำลังเตรียมเอกสาร PDF...");
     try {
-        // ส่ง action=viewPDF และ projectId ไปยัง Apps Script
         const response = await fetch(`${API_URL}?action=viewPDF&projectId=${projectId}`);
         const pdfUrl = await response.text();
         
         if (pdfUrl.includes("http")) {
             window.open(pdfUrl, '_blank');
-            showNotification("✅ สร้าง PDF สำเร็จ");
         } else {
-            // กรณีคอลัมน์ PDF ว่างหรือยังไม่ได้ทำรายงาน
             showNotification("❌ " + pdfUrl, false);
         }
     } catch (error) {
-        showNotification("❌ ไม่สามารถเปิด PDF ได้ในขณะนี้", false);
+        showNotification("❌ ไม่สามารถเปิด PDF ได้", false);
     }
 }
 
@@ -99,95 +110,114 @@ function openReportModal(id, name) {
     reportModal.show();
 }
 
-// 4. บันทึกโครงการใหม่ (ปรับปรุงเพื่อรองรับไฟล์แนบ)
+// 4. บันทึกโครงการใหม่ (พร้อมจัดการไฟล์แนบ)
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึก...';
-
+    
+    // เตรียมข้อมูลจากฟอร์ม
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
-    
-    // จัดการไฟล์แนบโครงการต้นฉบับ
+    data.action = "addProject";
+
+    // จัดการไฟล์แนบ
     const fileInput = document.getElementById('attachProjectFile');
     if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        const base64 = await toBase64(file);
-        data.projectFile = {
-            base64: base64.split(',')[1],
-            type: file.type,
-            name: file.name
-        };
+        
+        // จำกัดขนาดไฟล์ไม่เกิน 3MB เพื่อความเสถียรของ Apps Script
+        if (file.size > 3 * 1024 * 1024) {
+            alert("ไฟล์ขนาดใหญ่เกินไป (จำกัดไม่เกิน 3MB) กรุณาลดขนาดไฟล์ก่อนบันทึกค่ะ");
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังประมวลผลไฟล์...';
+        
+        try {
+            const base64Data = await toBase64(file);
+            data.projectFile = {
+                base64: base64Data,
+                type: file.type,
+                name: file.name
+            };
+        } catch (err) {
+            console.error("File error:", err);
+            showNotification("❌ ปัญหาเกี่ยวกับไฟล์แนบ", false);
+            submitBtn.disabled = false;
+            return;
+        }
     }
 
-    data.action = "addProject"; 
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึกลงระบบ...';
 
     try {
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify(data) 
+        });
         const result = await res.text();
+
         if (result === "Success") {
-            showNotification("✅ เพิ่มโครงการและแนบไฟล์เรียบร้อยแล้วค่ะ");
+            showNotification("✅ บันทึกโครงการเรียบร้อยแล้วค่ะ");
             e.target.reset();
             bootstrap.Modal.getInstance(document.getElementById('addProjectModal')).hide();
             setTimeout(() => location.reload(), 1500);
+        } else {
+            showNotification("❌ ข้อผิดพลาด: " + result, false);
         }
     } catch (error) {
-        showNotification("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ", false);
+        console.error("Submit Error:", error);
+        showNotification("❌ การเชื่อมต่อล้มเหลว", false);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "บันทึกข้อมูลลงระบบ";
     }
 });
 
-// 5. ส่งรายงานผลโครงการ
+// 5. ส่งรายงานผลโครงการ (PDCA)
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('reportSubmitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังส่งข้อมูล...';
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังส่งรายงาน...';
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+    data.action = "submitReport";
     
+    // จัดการรูปภาพประกอบ (เลือกหลายรูปได้)
     const fileInput = document.getElementById('photoFiles');
     const photoData = [];
-    if(fileInput.files.length > 0) {
+    if(fileInput && fileInput.files.length > 0) {
         for (let file of fileInput.files) {
-            const base64 = await toBase64(file);
-            photoData.push({ base64: base64.split(',')[1], type: file.type, name: file.name });
+            if (file.size < 2 * 1024 * 1024) { // จำกัดรูปละ 2MB
+                const base64 = await toBase64(file);
+                photoData.push({ base64: base64, type: file.type, name: file.name });
+            }
         }
     }
-
     data.photos = photoData;
-    data.action = "submitReport";
 
     try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         const result = await res.text();
         
         if (result === "Report Success") {
-            showNotification("✨ ดำเนินการส่งรายงานผลโครงการเรียบร้อยแล้วค่ะ");
+            showNotification("✨ ส่งรายงานผลเรียบร้อยแล้วค่ะ");
             bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
             setTimeout(() => location.reload(), 1500);
         } else {
-            showNotification("ตรวจพบข้อผิดพลาด: " + result, false);
+            showNotification("❌ เกิดข้อผิดพลาด: " + result, false);
         }
     } catch (error) {
-        showNotification("ไม่สามารถส่งรายงานได้ โปรดตรวจสอบอินเทอร์เน็ต", false);
+        showNotification("❌ ไม่สามารถส่งรายงานได้", false);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "ส่งรายงานและบันทึกผล";
     }
 });
 
-// ฟังก์ชันแปลงไฟล์เป็น Base64
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-});
-
-// เรียกทำงานครั้งแรก
+// เริ่มโหลดข้อมูลเมื่อเปิดหน้าเว็บ
 fetchDashboardData();
