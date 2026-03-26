@@ -130,37 +130,81 @@
     </div>
 
     <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0 shadow-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
             <div class="modal-header bg-navy text-white">
-                <h5 class="modal-title fw-bold">รายงานผลการดำเนินงานโครงการ</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title"><i class="bi bi-file-earmark-text me-2"></i>ส่งรายงานผลโครงการ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body">
                 <form id="reportForm">
-                    <input type="hidden" name="Project_ID" id="report_project_id">
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold">ชื่อโครงการ</label>
-                            <input type="text" class="form-control bg-light" id="report_project_name" readonly>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold">สรุปผลการดำเนินงาน (ตามขั้นตอน PDCA)</label>
-                            <textarea class="form-control" name="Summary_Result" rows="4" required placeholder="ระบุรายละเอียดการดำเนินงานพอสังเขป..."></textarea>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold">ปัญหาและอุปสรรค / แนวทางแก้ไข</label>
-                            <textarea class="form-control" name="Problems_Solutions" rows="2" placeholder="ถ้ามี..."></textarea>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold">อัปโหลดรูปภาพประกอบ (เลือกได้หลายรูป)</label>
-                            <input type="file" class="form-control" id="photoFiles" accept="image/*" multiple>
-                            <small class="text-muted">* ระบบจะเก็บรูปภาพไว้ใน Google Drive ของท่านโดยอัตโนมัติ</small>
+                    <input type="hidden" id="report_project_id" name="Project_ID">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ชื่อโครงการ</label>
+                        <input type="text" id="report_project_name" class="form-control bg-light" readonly>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">สถานที่ดำเนินงาน (ณ)</label>
+                            <input type="text" name="Location" class="form-control" placeholder="เช่น ห้องประชุมอาคาร 1" required>
                         </div>
                     </div>
-                    <div class="text-end mt-4 pt-3 border-top">
-                        <button type="button" class="btn btn-outline-secondary px-4 me-2" data-bs-dismiss="modal">ยกเลิก</button>
-                        <button type="submit" id="reportSubmitBtn" class="btn btn-success px-5">ส่งรายงานและบันทึกผล</button>
+
+                    <hr>
+                    <h6 class="text-navy fw-bold"><i class="bi bi-1-circle me-1"></i> ส่วนที่ 1: วัตถุประสงค์และเป้าหมาย</h6>
+                    <div class="mb-3">
+                        <label class="form-label">ผลการดำเนินงานเชิงปริมาณ</label>
+                        <textarea name="Quantitative_Result" class="form-control" rows="2" placeholder="เช่น ผู้เข้าร่วมโครงการจำนวน 50 คน"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">ผลการดำเนินงานเชิงคุณภาพ</label>
+                        <textarea name="Qualitative_Result" class="form-control" rows="2" placeholder="เช่น ผู้เข้าร่วมมีความพึงพอใจในระดับดีมาก"></textarea>
+                    </div>
+
+                    <hr>
+                    <h6 class="text-navy fw-bold"><i class="bi bi-2-circle me-1"></i> ส่วนที่ 2: ขั้นตอนการดำเนินงาน (PDCA)</h6>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">1. Plan (วางแผน)</label>
+                        <textarea name="Plan_Step" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">2. Do (ดำเนินการ)</label>
+                        <textarea name="Do_Step" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold">3. Check (ตรวจสอบ/ประเมินผล)</label>
+                        <textarea name="Check_Step" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">4. Act (ปรับปรุง/พัฒนา)</label>
+                        <textarea name="Act_Step" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <hr>
+                    <h6 class="text-navy fw-bold"><i class="bi bi-3-circle me-1"></i> ส่วนที่ 3: สรุปและข้อเสนอแนะ</h6>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">สรุปผลการดำเนินงาน</label>
+                        <textarea name="Summary_Result" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">สิ่งที่ควรปรับปรุง/พัฒนาในครั้งต่อไป</label>
+                        <textarea name="Improvements" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">ข้อเสนอแนะอื่นๆ</label>
+                        <textarea name="Other_Comments" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-danger">รูปภาพประกอบ (เลือกได้หลายรูป)</label>
+                        <input type="file" id="photoFiles" class="form-control" accept="image/*" multiple>
+                    </div>
+
+                    <div class="modal-footer px-0 pb-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                        <button type="submit" id="reportSubmitBtn" class="btn btn-navy">ส่งรายงานและบันทึกผล</button>
                     </div>
                 </form>
             </div>
