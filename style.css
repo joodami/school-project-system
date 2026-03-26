@@ -1,16 +1,27 @@
 /* ตั้งค่า Font K2D ทั้งเว็บ */
+@import url('https://fonts.googleapis.com/css2?family=K2D:wght@300;400;500;600;700&display=swap');
+
 * {
     font-family: 'K2D', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     background-color: #f4f7f9; /* สีพื้นหลังเทาฟ้าอ่อนสะอาดๆ */
     color: #333;
+    line-height: 1.6;
 }
 
-/* สีน้ำเงินเข้มสไตล์ราชการ */
+/* --- สีและธีมหลัก (Navy Theme) --- */
 .bg-navy {
     background-color: #1a3a5f !important;
+    color: white !important;
+}
+
+.text-navy {
+    color: #1a3a5f !important;
 }
 
 .table-navy {
@@ -21,63 +32,112 @@ body {
 .btn-navy {
     background-color: #1a3a5f;
     color: white;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 8px 20px;
-    border: none;
-    transition: 0.3s;
+    border: 1px solid #1a3a5f;
+    transition: all 0.3s ease;
 }
 
 .btn-navy:hover {
     background-color: #0d2540;
+    border-color: #0d2540;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-outline-navy {
+    color: #1a3a5f;
+    border: 1px solid #1a3a5f;
+    background-color: transparent;
+}
+
+.btn-outline-navy:hover {
+    background-color: #1a3a5f;
     color: white;
 }
 
-/* Dashboard Cards */
+/* --- Dashboard Cards --- */
 .stat-card {
-    border-radius: 8px;
-    border-bottom: 3px solid #dee2e6;
+    border-radius: 12px;
+    border: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
+}
+
+.stat-card h2 {
+    font-size: 2rem;
+    margin-top: 10px;
+}
+
+/* --- ตาราง (Table Customization) --- */
 .card-header {
     border-bottom: 2px solid #1a3a5f;
+    background-color: #ffffff !important;
 }
 
-/* ตาราง */
 .table {
     font-size: 0.95rem;
+    background-color: white;
 }
 
 .table thead th {
     font-weight: 500;
     padding: 15px;
     border: none;
+    vertical-align: middle;
 }
 
 .table tbody td {
     padding: 15px;
+    vertical-align: middle;
 }
 
-/* Badge สถานะ */
+/* --- Badge สถานะ --- */
 .status-badge {
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.82rem;
     font-weight: 500;
+    text-align: center;
 }
 
 .bg-success-subtle {
-    background-color: #d1e7dd !important;
-    color: #0f5132 !important;
-    border: 1px solid #badbcc;
+    background-color: #e8f5e9 !important;
+    color: #2e7d32 !important;
+    border: 1px solid #c8e6c9;
 }
 
 .bg-warning-subtle {
-    background-color: #fff3cd !important;
-    color: #664d03 !important;
-    border: 1px solid #ffecb5;
+    background-color: #fffde7 !important;
+    color: #f57f17 !important;
+    border: 1px solid #fff9c4;
 }
 
-/* Form Styling */
+/* --- Form & Modal Styling --- */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+}
+
+.modal-header {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s;
+}
+
 .form-control:focus, .form-select:focus {
     border-color: #1a3a5f;
     box-shadow: 0 0 0 0.25rem rgba(26, 58, 95, 0.1);
@@ -85,4 +145,38 @@ body {
 
 label {
     color: #1a3a5f;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+}
+
+hr {
+    margin: 1.5rem 0;
+    opacity: 0.15;
+}
+
+/* การจัดการส่วนของ PDF และปุ่มการจัดการ */
+.btn-group .btn {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+}
+
+/* Toast Notification Customization */
+.toast {
+    border-radius: 10px;
+}
+
+/* ปรับแต่ง Scrollbar ใน Modal ที่ยาว */
+.modal-dialog-scrollable .modal-body {
+    scrollbar-width: thin;
+    scrollbar-color: #1a3a5f #f0f0f0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .stat-card h2 {
+        font-size: 1.5rem;
+    }
+    header h1 {
+        font-size: 1.8rem;
+    }
 }
