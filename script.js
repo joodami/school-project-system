@@ -37,6 +37,12 @@ async function fetchDashboardData() {
             const isDone = project.Status === 'รายงานแล้ว';
             const statusClass = isDone ? 'bg-success-subtle' : 'bg-warning-subtle';
             
+            // ตรวจสอบลิงก์ไฟล์โครงการต้นฉบับ (คอลัมน์ที่ 13)
+            const fileUrl = project.Project_File_URL || ""; 
+            const fileBtn = fileUrl 
+                ? `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-primary ms-1" title="ดูไฟล์โครงการต้นฉบับ"><i class="bi bi-file-earmark-arrow-down"></i> ไฟล์แนบ</a>` 
+                : "";
+
             const row = `
                 <tr>
                     <td class="ps-4 fw-medium text-dark">${project.Project_Name}</td>
@@ -48,6 +54,7 @@ async function fetchDashboardData() {
                             <button onclick="viewPDF('${project.Project_ID}')" class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-file-pdf"></i> PDF
                             </button>
+                            ${fileBtn}
                             ${!isDone 
                                 ? `<button onclick="openReportModal('${project.Project_ID}', '${project.Project_Name}')" class="btn btn-sm btn-outline-navy ms-1" style="border: 1px solid #1a3a5f; color: #1a3a5f;">รายงาน</button>` 
                                 : `<button class="btn btn-sm btn-light ms-1" disabled>เรียบร้อย</button>`
@@ -68,12 +75,11 @@ async function fetchDashboardData() {
 async function viewPDF(projectId) {
     showNotification("⏳ กำลังสร้างเอกสาร PDF โปรดรอสักครู่...");
     try {
-        // ส่งคำขอแบบ GET พร้อม parameter action=viewPDF
         const response = await fetch(`${API_URL}?action=viewPDF&projectId=${projectId}`);
         const pdfUrl = await response.text();
         
         if (pdfUrl.includes("http")) {
-            window.open(pdfUrl, '_blank'); // เปิดลิงก์ PDF ในหน้าต่างใหม่
+            window.open(pdfUrl, '_blank');
             showNotification("✅ สร้าง PDF สำเร็จ");
         } else {
             showNotification("❌ ตรวจพบข้อผิดพลาด: " + pdfUrl, false);
@@ -91,7 +97,7 @@ function openReportModal(id, name) {
     reportModal.show();
 }
 
-// 4. บันทึกโครงการใหม่
+// 4. บันทึกโครงการใหม่ (ปรับปรุงเพื่อรองรับไฟล์แนบ)
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('submitBtn');
@@ -100,13 +106,26 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+    
+    // จัดการไฟล์แนบโครงการต้นฉบับ
+    const fileInput = document.getElementById('attachProjectFile');
+    if (fileInput && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const base64 = await toBase64(file);
+        data.projectFile = {
+            base64: base64.split(',')[1],
+            type: file.type,
+            name: file.name
+        };
+    }
+
     data.action = "addProject"; 
 
     try {
         const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
         const result = await res.text();
         if (result === "Success") {
-            showNotification("✅ เพิ่มโครงการใหม่เข้าสู่ระบบเรียบร้อยแล้วค่ะ");
+            showNotification("✅ เพิ่มโครงการและแนบไฟล์เรียบร้อยแล้วค่ะ");
             e.target.reset();
             bootstrap.Modal.getInstance(document.getElementById('addProjectModal')).hide();
             setTimeout(() => location.reload(), 1500);
@@ -119,7 +138,7 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
     }
 });
 
-// 5. ส่งรายงานผลโครงการ (ปรับปรุงให้เก็บค่า PDCA และหัวข้อใหม่)
+// 5. ส่งรายงานผลโครงการ
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById('reportSubmitBtn');
@@ -129,7 +148,6 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
-    // จัดการรูปภาพ
     const fileInput = document.getElementById('photoFiles');
     const photoData = [];
     if(fileInput.files.length > 0) {
@@ -161,6 +179,7 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
     }
 });
 
+// ฟังก์ชันแปลงไฟล์เป็น Base64
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
