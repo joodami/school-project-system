@@ -1,1 +1,35 @@
+body {
+    font-family: 'Sarabun', sans-serif;
+    background-color: #fdfaf6; /* สีครีมอ่อน */
+    color: #4a4a4a;
+}
 
+.stat-card {
+    border: none;
+    border-radius: 15px;
+    background-color: #ffffff;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-primary {
+    background-color: #a67c52; /* สีน้ำตาลไม้ */
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #8d6641;
+}
+
+.table thead {
+    background-color: #f2e9e1;
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
