@@ -81,7 +81,27 @@
                     <div class="row g-3">
                         <div class="col-md-9"><label class="form-label fw-bold small text-muted">ชื่อโครงการ / กิจกรรม</label><input type="text" class="form-control bg-light" name="Project_Name" required></div>
                         <div class="col-md-3"><label class="form-label fw-bold small text-muted">ปีงบประมาณ</label><select class="form-select bg-light" name="Fiscal_Year"><option value="2569">2569</option><option value="2570">2570</option></select></div>
-                        <div class="col-md-6"><label class="form-label fw-bold small text-muted">กลุ่มบริหาร/ฝ่าย</label><select class="form-select bg-light" name="Department" required><option value="สำนักงานอำนวยการ">สำนักงานอำนวยการ</option><option value="กลุ่มบริหารงบประมาณ">กลุ่มบริหารงบประมาณ</option><option value="กลุ่มสาระฯ วิทยาศาสตร์">กลุ่มสาระฯ วิทยาศาสตร์</option></select></div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">กลุ่มบริหาร/ฝ่าย/กลุ่มสาระฯ</label>
+                            <select class="form-select bg-light" name="Department" required>
+                                <option value="" disabled selected>เลือกกลุ่มงาน...</option>
+                                <option value="กลุ่มบริหารวิชาการ">กลุ่มบริหารวิชาการ</option>
+                                <option value="กลุ่มบริหารงบประมาณ">กลุ่มบริหารงบประมาณ</option>
+                                <option value="กลุ่มบริหารงานบุคคล">กลุ่มบริหารงานบุคคล</option>
+                                <option value="กลุ่มบริหารทั่วไป">กลุ่มบริหารทั่วไป</option>
+                                <option value="กลุ่มกิจการนักเรียน">กลุ่มกิจการนักเรียน</option>
+                                <option value="สำนักงานอำนวยการ">สำนักงานอำนวยการ</option>
+                                <option value="กลุ่มสาระฯ วิทยาศาสตร์">กลุ่มสาระฯ วิทยาศาสตร์</option>
+                                <option value="กลุ่มสาระฯ คณิตศาสตร์">กลุ่มสาระฯ คณิตศาสตร์</option>
+                                <option value="กลุ่มสาระฯ ภาษาไทย">กลุ่มสาระฯ ภาษาไทย</option>
+                                <option value="กลุ่มสาระฯ ภาษาต่างประเทศ">กลุ่มสาระฯ ภาษาต่างประเทศ</option>
+                                <option value="กลุ่มสาระฯ สังคมศึกษา">กลุ่มสาระฯ สังคมศึกษา</option>
+                                <option value="กลุ่มสาระฯ ศิลปะ">กลุ่มสาระฯ ศิลปะ</option>
+                                <option value="กลุ่มสาระฯ การงานอาชีพ">กลุ่มสาระฯ การงานอาชีพ</option>
+                                <option value="กลุ่มสาระฯ สุขศึกษาและพลศึกษา">กลุ่มสาระฯ สุขศึกษาและพลศึกษา</option>
+                                <option value="กิจกรรมพัฒนาผู้เรียน">กิจกรรมพัฒนาผู้เรียน</option>
+                            </select>
+                        </div>
                         <div class="col-md-6"><label class="form-label fw-bold small text-muted">งบประมาณ (บาท)</label><input type="number" class="form-control bg-light" name="Budget_Total" required></div>
                         <div class="col-12"><label class="form-label fw-bold small text-muted">ชื่อผู้รับผิดชอบโครงการ</label><input type="text" class="form-control bg-light" name="Responsible_Person" required></div>
                         <div class="col-12"><label class="form-label text-primary fw-bold"><i class="bi bi-paperclip"></i> แนบไฟล์โครงการต้นฉบับ</label><input type="file" id="attachProjectFile" class="form-control border-primary" accept=".pdf,.doc,.docx"></div>
