@@ -44,6 +44,7 @@ function updateDisplay() {
 }
 
 // 4. สร้างแถวในตาราง (เพิ่มปุ่มแก้ไขข้อมูล)
+// 4. สร้างแถวในตาราง (เพิ่ม data-label เพื่อให้แสดงหัวข้อบนมือถือ)
 function renderTable(projects) {
     const tableBody = document.getElementById('projectTableBody');
     tableBody.innerHTML = '';
@@ -57,18 +58,22 @@ function renderTable(projects) {
         const isDone = p.Status === 'รายงานแล้ว';
         const row = `
             <tr>
-                <td class="ps-4">
+                <td class="ps-4" data-label="ชื่อโครงการ">
                     <div class="fw-bold text-dark">${p.Project_Name}</div>
                     <small class="text-muted"><i class="bi bi-person me-1"></i>${p.Responsible_Person || '-'}</small>
                 </td>
-                <td><span class="badge bg-light text-dark border small">${p.Fiscal_Year}</span></td>
-                <td class="fw-bold text-primary">${p.Budget_Total.toLocaleString()}</td>
-                <td>
+                <td data-label="ปีงบประมาณ">
+                    <span class="badge bg-light text-dark border small">${p.Fiscal_Year}</span>
+                </td>
+                <td data-label="งบประมาณ" class="fw-bold text-primary">
+                    ${p.Budget_Total.toLocaleString()}
+                </td>
+                <td data-label="สถานะ">
                     <span class="badge ${isDone ? 'bg-success' : 'bg-warning text-dark'} shadow-sm">
                         <i class="bi ${isDone ? 'bi-check-circle-fill' : 'bi-clock-history'} me-1"></i>${p.Status}
                     </span>
                 </td>
-                <td>
+                <td data-label="จัดการข้อมูล">
                     <div class="d-flex flex-column gap-2">
                         <div class="btn-group shadow-sm">
                             <button onclick="window.open('${p.Project_File_URL}', '_blank')" class="btn btn-sm btn-outline-primary" ${p.Project_File_URL === '-' ? 'disabled' : ''}>
