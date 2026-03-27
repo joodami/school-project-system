@@ -191,3 +191,33 @@ body {
     }
 }
 
+/* --- ปรับแต่ง Header ของการ์ดให้พอดีในมือถือ --- */
+@media (max-width: 576px) {
+    /* ปรับขนาดตัวอักษรหัวข้อ "รายการโครงการ" */
+    .card-header h6 {
+        font-size: 0.9rem !important;
+        white-space: nowrap;
+    }
+
+    /* ปรับขนาดปุ่มเพิ่มโครงการให้เล็กลงแต่ยังกดง่าย */
+    .btn-sm-custom {
+        font-size: 0.75rem !important;
+        padding: 5px 12px !important;
+        white-space: nowrap;
+        flex-shrink: 0; /* ป้องกันปุ่มโดนบีบจนเบี้ยว */
+    }
+
+    /* ลด Padding ของหัวการ์ดลงเล็กน้อยเพื่อให้มีพื้นที่ตรงกลาง */
+    .card-header {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+}
+
+/* เพิ่มเติม: ทำให้ชื่อโครงการในมือถือดูเด่นชัดขึ้น */
+@media (max-width: 768px) {
+    .table tbody td:first-child .fw-bold {
+        font-size: 0.95rem;
+        color: #0d47a1; /* ใช้สีน้ำเงินเข้มให้ดูเป็นหัวข้อ */
+    }
+}
