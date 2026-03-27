@@ -72,19 +72,17 @@
                             <th>ปีงบฯ</th>
                             <th>งบประมาณ</th>
                             <th>สถานะ</th>
-                            <th class="text-center">จัดการไฟล์และรายงาน</th>
+                            <th class="text-center">จัดการ</th>
                         </tr>
                     </thead>
-                    <tbody id="projectTableBody">
-                        </tbody>
+                    <tbody id="projectTableBody"></tbody>
                 </table>
             </div>
 
             <div class="card-footer bg-white d-flex flex-column flex-md-row justify-content-between align-items-center py-3">
                 <small class="text-muted mb-2 mb-md-0" id="pageInfo">กำลังโหลดข้อมูล...</small>
                 <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0" id="paginationWrapper">
-                        </ul>
+                    <ul class="pagination pagination-sm mb-0" id="paginationWrapper"></ul>
                 </nav>
             </div>
         </div>
@@ -94,7 +92,7 @@
         <div class="modal-dialog modal-lg">
             <form id="projectForm" class="modal-content border-0 rounded-4 shadow">
                 <div class="modal-header bg-primary text-white border-0">
-                    <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>ลงทะเบียนโครงการใหม่</h5>
+                    <h5 class="modal-title fw-bold"><i class="bi bi-plus-circle me-2"></i>ลงทะเบียนโครงการใหม่</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -123,12 +121,40 @@
                             </select>
                         </div>
                         <div class="col-md-6"><label class="form-label fw-bold small text-muted">งบประมาณ (บาท)</label><input type="number" class="form-control bg-light" name="Budget_Total" required></div>
-                        <div class="col-12"><label class="form-label fw-bold small text-muted">ชื่อผู้รับผิดชอบโครงการ</label><input type="text" class="form-control bg-light" name="Responsible_Person" required></div>
-                        <div class="col-12"><label class="form-label text-primary fw-bold small"><i class="bi bi-paperclip"></i> แนบไฟล์แผนโครงการ (PDF)</label><input type="file" id="attachProjectFile" class="form-control border-primary" accept=".pdf,.doc,.docx"></div>
+                        <div class="col-md-6"><label class="form-label fw-bold small text-muted">ชื่อผู้รับผิดชอบโครงการ</label><input type="text" class="form-control bg-light" name="Responsible_Person" required></div>
+                        
+                        <div class="col-md-6"><label class="form-label fw-bold small text-danger">หมายเลขโทรศัพท์ (ใช้เป็นรหัสผ่านเพื่อแก้ไข/ลบ)</label><input type="tel" class="form-control border-danger" name="Phone" placeholder="กรอกเบอร์โทร 10 หลัก" required></div>
+                        
+                        <div class="col-12"><label class="form-label text-primary fw-bold small"><i class="bi bi-paperclip"></i> แนบไฟล์แผนโครงการ (PDF)</label><input type="file" id="attachProjectFile" class="form-control border-primary" accept=".pdf"></div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="submit" id="submitBtn" class="btn btn-primary px-5 rounded-pill fw-bold">บันทึกโครงการ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editProjectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <form id="editProjectForm" class="modal-content border-0 rounded-4 shadow">
+                <input type="hidden" name="Project_ID" id="edit_project_id">
+                <div class="modal-header bg-warning text-dark border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>แก้ไขโครงการ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-9"><label class="form-label fw-bold small">ชื่อโครงการ</label><input type="text" class="form-control" name="Project_Name" id="edit_name" required></div>
+                        <div class="col-md-3"><label class="form-label fw-bold small">ปีงบฯ</label><input type="text" class="form-control bg-light" name="Fiscal_Year" id="edit_year" readonly></div>
+                        <div class="col-md-6"><label class="form-label fw-bold small">งบประมาณ</label><input type="number" class="form-control" name="Budget_Total" id="edit_budget" required></div>
+                        <div class="col-md-6"><label class="form-label fw-bold small">ผู้รับผิดชอบ</label><input type="text" class="form-control" name="Responsible_Person" id="edit_person" required></div>
+                        <div class="col-md-12"><label class="form-label fw-bold text-danger small">ระบุเบอร์โทรศัพท์เดิมเพื่อยืนยันการแก้ไข/ลบ</label><input type="tel" class="form-control border-danger" name="Auth_Phone" id="edit_auth_phone" required></div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-danger me-auto rounded-pill px-4" onclick="handleDelete()">ลบโครงการ</button>
+                    <button type="submit" id="editSubmitBtn" class="btn btn-warning px-5 rounded-pill fw-bold">บันทึกการแก้ไข</button>
                 </div>
             </form>
         </div>
@@ -146,7 +172,7 @@
                     <p class="mb-1 text-muted small">โครงการที่เลือก:</p>
                     <h6 id="report_project_name" class="fw-bold mb-4 text-success">-</h6>
                     <div class="text-start">
-                        <label class="form-label text-success fw-bold small">แนบไฟล์รายงานสรุปผล (PDF เท่านั้น)</label>
+                        <label class="form-label text-success fw-bold small">แนบไฟล์รายงานสรุปผล (PDF)</label>
                         <input type="file" id="reportFile" class="form-control border-success" accept=".pdf" required>
                     </div>
                 </div>
