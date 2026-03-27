@@ -307,10 +307,14 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
 
 // ฟังก์ชันเสริม
 function showSuccess(title, msg) {
-    document.getElementById('successTitle').innerText = title;
-    document.getElementById('successMessage').innerText = msg;
-    new bootstrap.Modal(document.getElementById('successModal')).show();
-    document.getElementById('successModal').addEventListener('hidden.bs.modal', () => location.reload());
+    Swal.fire({
+        icon: 'success',
+        title: title,
+        text: msg,
+        confirmButtonColor: '#0d47a1'
+    }).then(() => {
+        location.reload();
+    });
 }
 
 function convertFileToBase64(file) {
