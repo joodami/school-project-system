@@ -125,3 +125,69 @@ body {
     .stat-card h2 { font-size: 1.5rem; }
     .table { font-size: 0.9rem; }
 }
+
+/* --- ส่วนปรับปรุงสำหรับมือถือโดยเฉพาะ --- */
+@media (max-width: 768px) {
+    /* 1. ซ่อนหัวตาราง (Thead) เพราะมันทำให้กินที่ */
+    .table thead {
+        display: none;
+    }
+
+    /* 2. เปลี่ยนทุกแถว (tr) ให้เป็นลักษณะเหมือนการ์ด */
+    .table tbody tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 1rem;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 10px;
+    }
+
+    /* 3. จัดการแต่ละช่อง (td) ให้เรียงต่อกัน */
+    .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        padding: 8px 12px !important;
+        text-align: right;
+    }
+
+    /* 4. ใส่หัวข้อนำหน้าข้อมูลในแต่ละบรรทัด (Label) */
+    .table tbody td::before {
+        content: attr(data-label); /* ดึงชื่อหัวข้อมาแสดง */
+        font-weight: 700;
+        color: #636e72;
+        text-align: left;
+        flex: 1;
+        font-size: 0.85rem;
+    }
+
+    /* 5. ปรับส่วนชื่อโครงการให้เด่นและเต็มความกว้าง */
+    .table tbody td:first-child {
+        display: block;
+        text-align: left;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        margin-bottom: 10px;
+        padding: 12px !important;
+    }
+    .table tbody td:first-child::before {
+        display: none; /* ชื่อโครงการไม่ต้องมีหัวข้อนำหน้า */
+    }
+
+    /* 6. ปรับปุ่มให้กว้างเต็มจอเพื่อให้กดง่าย */
+    .table tbody td:last-child {
+        display: block;
+        text-align: center;
+        border-top: 1px dashed #eee;
+        margin-top: 5px;
+        padding-top: 15px !important;
+    }
+    .btn-group, .btn-group + .btn, .btn-success {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
