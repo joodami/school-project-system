@@ -1,6 +1,9 @@
 // 1. กำหนดค่าเริ่มต้นและเชื่อมต่อ API
 const API_URL = "https://script.google.com/macros/s/AKfycbzNgRqYHoezZkOvLXD61ZipvbL7Oiv55KWWKFcMreC2Dw7aQoSy77Ae6v1WaB3LdAxYvQ/exec"; 
-let allProjectsData = [];
+let allProjectsData = []; // ข้อมูลต้นฉบับทั้งหมดจาก Server
+let filteredData = [];    // ข้อมูลที่ผ่านการกรอง (ค้นหา/เลือกแท็บ)
+let currentPage = 1;      // หน้าปัจจุบัน
+const rowsPerPage = 10;   // จำนวนรายการต่อหน้า
 
 // 2. ฟังก์ชันดึงข้อมูลจาก Google Sheets มาแสดงผล
 async function fetchDashboardData() {
@@ -10,6 +13,7 @@ async function fetchDashboardData() {
         const data = await response.json();
         
         allProjectsData = data.projects;
+        filteredData = [...allProjectsData]; // เริ่มต้นให้ข้อมูลแสดงผลเท่ากับข้อมูลทั้งหมด
         
         // อัปเดตตัวเลขบน Dashboard
         document.getElementById('totalProjects').innerText = data.summary.totalProjects;
@@ -17,14 +21,31 @@ async function fetchDashboardData() {
         document.getElementById('pendingCount').innerText = data.summary.pendingCount;
         document.getElementById('totalBudget').innerText = data.summary.totalBudget.toLocaleString();
         
-        renderTable(allProjectsData);
+        updateDisplay(); // เรียกใช้ฟังก์ชันจัดการการแสดงผล
     } catch (e) { 
         console.error("Fetch Error:", e);
         alert("ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต");
     }
 }
 
-// 3. ฟังก์ชันสร้างแถวในตาราง
+// 3. ฟังก์ชันควบคุมการแสดงผลหลัก (ตาราง + Pagination)
+function updateDisplay() {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const paginatedItems = filteredData.slice(startIndex, endIndex);
+    
+    renderTable(paginatedItems);
+    renderPagination();
+    
+    // อัปเดตข้อความแสดงจำนวนรายการ (เช่น แสดงรายการที่ 1-10 จาก 50)
+    const total = filteredData.length;
+    const infoText = total > 0 
+        ? `แสดงรายการที่ ${startIndex + 1}-${Math.min(endIndex, total)} จาก ${total}`
+        : `ไม่พบข้อมูลที่ต้องการ`;
+    document.getElementById('pageInfo').innerText = infoText;
+}
+
+// 4. ฟังก์ชันสร้างแถวในตาราง
 function renderTable(projects) {
     const tableBody = document.getElementById('projectTableBody');
     tableBody.innerHTML = '';
@@ -76,20 +97,62 @@ function renderTable(projects) {
     });
 }
 
-// 4. ฟังก์ชันกรองข้อมูลตามกลุ่มงาน
+// 5. ฟังก์ชันสร้างปุ่ม Pagination
+function renderPagination() {
+    const wrapper = document.getElementById('paginationWrapper');
+    wrapper.innerHTML = '';
+    const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+    
+    if (pageCount <= 1) return; // ถ้าข้อมูลน้อยกว่า 1 หน้า ไม่ต้องแสดงปุ่ม
+
+    for (let i = 1; i <= pageCount; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${currentPage === i ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+        wrapper.appendChild(li);
+    }
+}
+
+function changePage(page) {
+    event.preventDefault();
+    currentPage = page;
+    updateDisplay();
+    // เลื่อนหน้าจอกลับมาที่ส่วนบนของตารางเพื่อความสะดวก
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 6. ระบบค้นหา (Search Logic)
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    
+    // ค้นหาจากข้อมูลต้นฉบับ
+    filteredData = allProjectsData.filter(p => 
+        p.Project_Name.toLowerCase().includes(term) || 
+        (p.Responsible_Person && p.Responsible_Person.toLowerCase().includes(term))
+    );
+    
+    currentPage = 1; // รีเซ็ตไปหน้า 1 ทุกครั้งที่ค้นหา
+    updateDisplay();
+});
+
+// 7. ฟังก์ชันกรองข้อมูลตามกลุ่มงาน (Tab Logic)
 function filterTable(dept) {
+    // ล้างช่องค้นหาเมื่อมีการสลับแท็บ
+    document.getElementById('searchInput').value = '';
+    
     // อัปเดตสถานะปุ่มเมนู
     document.querySelectorAll('#departmentTabs .nav-link').forEach(b => b.classList.remove('active'));
     if (event) event.target.classList.add('active');
 
-    const filtered = dept === 'ทั้งหมด' 
+    filteredData = dept === 'ทั้งหมด' 
         ? allProjectsData 
         : allProjectsData.filter(p => p.Department === dept);
     
-    renderTable(filtered);
+    currentPage = 1; // รีเซ็ตไปหน้า 1
+    updateDisplay();
 }
 
-// 5. ฟังก์ชันเปิด Modal ส่งรายงาน
+// 8. ฟังก์ชันเปิด Modal ส่งรายงาน
 function openReportModal(id, name) {
     document.getElementById('report_project_id').value = id;
     document.getElementById('report_project_name').innerText = name;
@@ -97,7 +160,7 @@ function openReportModal(id, name) {
     modal.show();
 }
 
-// 6. ฟังก์ชันดูไฟล์ PDF รายงาน
+// 9. ฟังก์ชันดูไฟล์ PDF รายงาน
 async function viewPDF(id) {
     try {
         const res = await fetch(`${API_URL}?action=viewPDF&projectId=${id}`);
@@ -112,19 +175,18 @@ async function viewPDF(id) {
     }
 }
 
-// 7. ฟังก์ชันแสดงการแจ้งเตือนสำเร็จ
+// 10. ฟังก์ชันแสดงการแจ้งเตือนสำเร็จ
 function showSuccess(title, msg) {
     document.getElementById('successTitle').innerText = title;
     document.getElementById('successMessage').innerText = msg;
     const sModal = new bootstrap.Modal(document.getElementById('successModal'));
     sModal.show();
-    // รีโหลดหน้าเว็บเมื่อปิด Modal แจ้งเตือน
     document.getElementById('successModal').addEventListener('hidden.bs.modal', () => {
         location.reload();
     });
 }
 
-// 8. การทำงานของฟอร์มเพิ่มโครงการ
+// 11. การทำงานของฟอร์มเพิ่มโครงการ
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
@@ -150,11 +212,11 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
     } catch (e) {
         alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
         btn.disabled = false;
-        btn.innerText = "บันทึกข้อมูลโครงการ";
+        btn.innerText = "บันทึกโครงการ";
     }
 });
 
-// 9. การทำงานของฟอร์มส่งรายงาน
+// 12. การทำงานของฟอร์มส่งรายงาน
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('reportSubmitBtn');
