@@ -1,13 +1,127 @@
-body { font-family: 'K2D', sans-serif; background-color: #f8f9fa; color: #2d3436; }
-.main-header { background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%); border-radius: 0 0 2rem 2rem; margin-bottom: 1rem; }
-.stat-card { transition: all 0.3s; border: none; }
-.stat-card:hover { transform: translateY(-3px); }
-.nav-pills .nav-link { color: #636e72; font-weight: 500; border-radius: 10px; margin-right: 5px; border: 1px solid transparent; }
-.nav-pills .nav-link.active { background-color: #0d47a1 !important; box-shadow: 0 4px 8px rgba(13,71,161,0.2); }
-.nav-pills .nav-link:not(.active):hover { background-color: #e9ecef; }
-.table { background: white; border-radius: 1rem; }
-.table thead th { border-top: none; padding: 1rem; color: #636e72; font-size: 0.85rem; }
-.btn-group .btn { font-size: 0.75rem; border-radius: 8px !important; }
-.modal-content { border: none; }
-.form-control:focus, .form-select:focus { box-shadow: 0 0 0 0.25rem rgba(13,71,161,0.1); border-color: #0d47a1; }
-.badge { font-weight: 500; padding: 0.5em 0.8em; border-radius: 6px; }
+/* 1. พื้นฐานและฟอนต์ */
+body { 
+    font-family: 'K2D', sans-serif; 
+    background-color: #f0f2f5; 
+    color: #2d3436; 
+    line-height: 1.6;
+}
+
+/* 2. ส่วนหัวของหน้าเว็บ (Header) */
+.main-header { 
+    background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%); 
+    border-radius: 0 0 1.5rem 1.5rem; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* 3. การ์ดสรุปตัวเลข (Dashboard Stats) */
+.stat-card { 
+    transition: all 0.3s ease; 
+    border: none; 
+    border-radius: 1rem !important;
+}
+.stat-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important; 
+}
+.stat-card h2 {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+/* 4. เมนูเลือกกลุ่มงาน (Navigation Pills) */
+.nav-pills .nav-link { 
+    color: #636e72; 
+    font-weight: 500; 
+    border-radius: 50px; 
+    margin-right: 8px; 
+    padding: 8px 20px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.nav-pills .nav-link.active { 
+    background-color: #0d47a1 !important; 
+    color: white !important;
+    border-color: #0d47a1;
+    box-shadow: 0 4px 10px rgba(13,71,161,0.25); 
+}
+
+.nav-pills .nav-link:not(.active):hover { 
+    background-color: #e9ecef; 
+    border-color: #ced4da;
+}
+
+/* 5. ตารางข้อมูล (Table) */
+.table { 
+    background: white; 
+}
+.table thead th { 
+    background-color: #f8f9fa;
+    border-top: none; 
+    padding: 1.1rem; 
+    color: #636e72; 
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* 6. ปุ่มและการจัดการไฟล์ (Buttons) */
+.btn-group .btn { 
+    font-size: 0.8rem; 
+    border-radius: 8px !important; 
+    padding: 5px 12px;
+}
+.btn-primary { background-color: #0d47a1; border-color: #0d47a1; }
+.btn-primary:hover { background-color: #0a3d8d; border-color: #0a3d8d; }
+
+/* 7. หน้าต่างป๊อปอัพ (Modals) */
+.modal-content { 
+    border: none; 
+    border-radius: 1.25rem; 
+}
+.modal-header {
+    border-radius: 1.25rem 1.25rem 0 0;
+}
+
+/* 8. ฟอร์มกรอกข้อมูล (Inputs) */
+.form-control, .form-select {
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+.form-control:focus, .form-select:focus { 
+    box-shadow: 0 0 0 0.25rem rgba(13,71,161,0.1); 
+    border-color: #0d47a1; 
+}
+
+/* 9. ป้ายสถานะ (Badges) */
+.badge { 
+    font-weight: 500; 
+    padding: 0.6em 1em; 
+    border-radius: 8px; 
+    font-size: 0.75rem;
+}
+
+/* 10. ปรับแต่ง Scrollbar สำหรับเมนูหมวดหมู่บนมือถือ */
+.overflow-auto::-webkit-scrollbar {
+    height: 4px;
+}
+.overflow-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.overflow-auto::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* 11. การแสดงผลบนมือถือ (Responsive) */
+@media (max-width: 768px) {
+    .main-header h3 { font-size: 1.2rem; }
+    .stat-card h2 { font-size: 1.5rem; }
+    .table { font-size: 0.9rem; }
+}
