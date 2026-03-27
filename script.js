@@ -39,31 +39,35 @@ function renderTable(projects) {
         const row = `
             <tr>
                 <td class="ps-4">
-                    <div class="fw-bold text-dark" style="font-size: 0.95rem;">${p.Project_Name}</div>
-                    <small class="text-muted"><i class="bi bi-person me-1"></i>${p.Responsible_Person || '-'}</small>
+                    <div class="fw-bold text-dark" style="font-size: 1rem;">${p.Project_Name}</div>
+                    <small class="text-muted"><i class="bi bi-person me-1"></i>ผู้รับผิดชอบ: ${p.Responsible_Person || '-'}</small>
                 </td>
-                <td><span class="badge bg-light text-dark border small">${p.Fiscal_Year}</span></td>
-                <td class="fw-bold text-primary">${p.Budget_Total.toLocaleString()}</td>
-                <td>
+                <td data-label="ปีงบประมาณ">
+                    <span class="badge bg-light text-dark border small">${p.Fiscal_Year}</span>
+                </td>
+                <td data-label="งบประมาณ" class="fw-bold text-primary">
+                    ${p.Budget_Total.toLocaleString()} บาท
+                </td>
+                <td data-label="สถานะการดำเนินงาน">
                     <span class="badge ${isDone ? 'bg-success' : 'bg-warning text-dark'} shadow-sm">
                         <i class="bi ${isDone ? 'bi-check-circle-fill' : 'bi-clock-history'} me-1"></i>${p.Status}
                     </span>
                 </td>
-                <td class="text-center">
-                    <div class="d-flex flex-column gap-1 align-items-center">
-                        <div class="btn-group w-100 shadow-sm" style="max-width: 200px;">
-                            <button onclick="window.open('${p.Project_File_URL}', '_blank')" class="btn btn-sm btn-outline-primary" ${p.Project_File_URL === '-' ? 'disabled' : ''}>
-                                <i class="bi bi-file-earmark-text"></i> <small>แผน</small>
+                <td data-label="จัดการข้อมูล">
+                    <div class="d-flex flex-column gap-2 align-items-center">
+                        <div class="btn-group w-100 shadow-sm">
+                            <button onclick="window.open('${p.Project_File_URL}', '_blank')" class="btn btn-outline-primary py-2" ${p.Project_File_URL === '-' ? 'disabled' : ''}>
+                                <i class="bi bi-file-earmark-text"></i> ดูแผนโครงการ
                             </button>
-                            <button onclick="viewPDF('${p.Project_ID}')" class="btn btn-sm btn-outline-secondary" ${!isDone ? 'disabled' : ''}>
-                                <i class="bi bi-file-earmark-check"></i> <small>รายงาน</small>
+                            <button onclick="viewPDF('${p.Project_ID}')" class="btn btn-outline-secondary py-2" ${!isDone ? 'disabled' : ''}>
+                                <i class="bi bi-file-earmark-check"></i> ดูรายงานผล
                             </button>
                         </div>
                         ${!isDone ? 
-                            `<button onclick="openReportModal('${p.Project_ID}', '${p.Project_Name}')" class="btn btn-sm btn-success w-100 rounded-pill mt-1 fw-bold shadow-sm" style="max-width: 200px;">
-                                <i class="bi bi-cloud-upload"></i> ส่งรายงานผล
+                            `<button onclick="openReportModal('${p.Project_ID}', '${p.Project_Name}')" class="btn btn-success w-100 rounded-3 py-2 fw-bold shadow-sm">
+                                <i class="bi bi-cloud-upload"></i> กดเพื่อส่งรายงานผลที่นี่
                             </button>` : 
-                            `<span class="text-success small fw-bold mt-1"><i class="bi bi-patch-check"></i> ส่งเรียบร้อยแล้ว</span>`
+                            `<div class="alert alert-success py-2 w-100 mb-0 small fw-bold text-center"><i class="bi bi-patch-check"></i> ส่งรายงานเรียบร้อยแล้ว</div>`
                         }
                     </div>
                 </td>
