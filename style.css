@@ -39,23 +39,19 @@ body {
     background-color: #ffffff;
     transition: all 0.2s ease;
 }
-
 .nav-pills .nav-link.active { 
     background-color: #0d47a1 !important; 
     color: white !important;
     border-color: #0d47a1;
     box-shadow: 0 4px 10px rgba(13,71,161,0.25); 
 }
-
 .nav-pills .nav-link:not(.active):hover { 
     background-color: #e9ecef; 
     border-color: #ced4da;
 }
 
 /* 5. ตารางข้อมูล (Table) */
-.table { 
-    background: white; 
-}
+.table { background: white; }
 .table thead th { 
     background-color: #f8f9fa;
     border-top: none; 
@@ -80,13 +76,8 @@ body {
 .btn-primary:hover { background-color: #0a3d8d; border-color: #0a3d8d; }
 
 /* 7. หน้าต่างป๊อปอัพ (Modals) */
-.modal-content { 
-    border: none; 
-    border-radius: 1.25rem; 
-}
-.modal-header {
-    border-radius: 1.25rem 1.25rem 0 0;
-}
+.modal-content { border: none; border-radius: 1.25rem; }
+.modal-header { border-radius: 1.25rem 1.25rem 0 0; }
 
 /* 8. ฟอร์มกรอกข้อมูล (Inputs) */
 .form-control, .form-select {
@@ -108,32 +99,38 @@ body {
 }
 
 /* 10. ปรับแต่ง Scrollbar สำหรับเมนูหมวดหมู่บนมือถือ */
-.overflow-auto::-webkit-scrollbar {
-    height: 4px;
+.overflow-auto::-webkit-scrollbar { height: 4px; }
+.overflow-auto::-webkit-scrollbar-track { background: #f1f1f1; }
+.overflow-auto::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+/* 11. ตกแต่งระบบ Pagination และ Search */
+.pagination .page-link {
+    color: #0d47a1;
+    border-radius: 8px;
+    margin: 0 3px;
+    border: 1px solid #dee2e6;
+    padding: 6px 12px;
+    transition: all 0.2s;
 }
-.overflow-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
+.pagination .page-item.active .page-link {
+    background-color: #0d47a1;
+    border-color: #0d47a1;
+    color: white;
+    box-shadow: 0 3px 6px rgba(13,71,161,0.2);
 }
-.overflow-auto::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
+#searchInput:focus {
+    background-color: #ffffff !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075), 0 0 0 0.25rem rgba(13,71,161,0.1);
 }
 
-/* 11. การแสดงผลบนมือถือ (Responsive) */
+/* 12. การแสดงผลบนมือถือ (Responsive) */
 @media (max-width: 768px) {
     .main-header h3 { font-size: 1.2rem; }
     .stat-card h2 { font-size: 1.5rem; }
     .table { font-size: 0.9rem; }
-}
 
-/* --- ส่วนปรับปรุงสำหรับมือถือโดยเฉพาะ --- */
-@media (max-width: 768px) {
-    /* 1. ซ่อนหัวตาราง (Thead) เพราะมันทำให้กินที่ */
-    .table thead {
-        display: none;
-    }
-
-    /* 2. เปลี่ยนทุกแถว (tr) ให้เป็นลักษณะเหมือนการ์ด */
+    /* เปลี่ยนตารางเป็นรูปแบบ Card ในมือถือ */
+    .table thead { display: none; }
     .table tbody tr {
         display: block;
         margin-bottom: 1.5rem;
@@ -143,8 +140,6 @@ body {
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         padding: 10px;
     }
-
-    /* 3. จัดการแต่ละช่อง (td) ให้เรียงต่อกัน */
     .table tbody td {
         display: flex;
         justify-content: space-between;
@@ -153,18 +148,14 @@ body {
         padding: 8px 12px !important;
         text-align: right;
     }
-
-    /* 4. ใส่หัวข้อนำหน้าข้อมูลในแต่ละบรรทัด (Label) */
     .table tbody td::before {
-        content: attr(data-label); /* ดึงชื่อหัวข้อมาแสดง */
+        content: attr(data-label);
         font-weight: 700;
         color: #636e72;
         text-align: left;
         flex: 1;
         font-size: 0.85rem;
     }
-
-    /* 5. ปรับส่วนชื่อโครงการให้เด่นและเต็มความกว้าง */
     .table tbody td:first-child {
         display: block;
         text-align: left;
@@ -173,11 +164,11 @@ body {
         margin-bottom: 10px;
         padding: 12px !important;
     }
-    .table tbody td:first-child::before {
-        display: none; /* ชื่อโครงการไม่ต้องมีหัวข้อนำหน้า */
+    .table tbody td:first-child::before { display: none; }
+    .table tbody td:first-child .fw-bold {
+        font-size: 0.95rem;
+        color: #0d47a1;
     }
-
-    /* 6. ปรับปุ่มให้กว้างเต็มจอเพื่อให้กดง่าย */
     .table tbody td:last-child {
         display: block;
         text-align: center;
@@ -191,33 +182,14 @@ body {
     }
 }
 
-/* --- ปรับแต่ง Header ของการ์ดให้พอดีในมือถือ --- */
+/* ปรับแต่ง Header การ์ดในมือถือ */
 @media (max-width: 576px) {
-    /* ปรับขนาดตัวอักษรหัวข้อ "รายการโครงการ" */
-    .card-header h6 {
-        font-size: 0.9rem !important;
-        white-space: nowrap;
-    }
-
-    /* ปรับขนาดปุ่มเพิ่มโครงการให้เล็กลงแต่ยังกดง่าย */
+    .card-header h6 { font-size: 0.9rem !important; white-space: nowrap; }
     .btn-sm-custom {
         font-size: 0.75rem !important;
         padding: 5px 12px !important;
         white-space: nowrap;
-        flex-shrink: 0; /* ป้องกันปุ่มโดนบีบจนเบี้ยว */
+        flex-shrink: 0;
     }
-
-    /* ลด Padding ของหัวการ์ดลงเล็กน้อยเพื่อให้มีพื้นที่ตรงกลาง */
-    .card-header {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-    }
-}
-
-/* เพิ่มเติม: ทำให้ชื่อโครงการในมือถือดูเด่นชัดขึ้น */
-@media (max-width: 768px) {
-    .table tbody td:first-child .fw-bold {
-        font-size: 0.95rem;
-        color: #0d47a1; /* ใช้สีน้ำเงินเข้มให้ดูเป็นหัวข้อ */
-    }
+    .card-header { padding-left: 10px !important; padding-right: 10px !important; }
 }
