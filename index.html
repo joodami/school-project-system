@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="main-header py-4 shadow-sm">
-        <div class="container text-center text-white">
-            <img src="https://raw.githubusercontent.com/joodami/school-assets/main/logo.png" alt="Logo" style="height: 70px;" class="mb-2">
+    <div class="main-header py-4 shadow-sm text-center text-white">
+        <div class="container">
+            <img src="https://www.piman.ac.th/web/wp-content/uploads/2021/05/logo-piman.png" alt="Logo" style="height: 70px;" class="mb-2">
             <h3 class="fw-bold mb-0">ระบบบริหารจัดการและติดตามโครงการ</h3>
             <p class="opacity-75">โรงเรียนพิมานพิทยาสรรค์ จังหวัดสตูล</p>
         </div>
@@ -28,19 +28,18 @@
 
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center border-bottom">
-                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-collection-fill text-primary me-2"></i>รายการโครงการแยกตามกลุ่มงาน</h5>
+                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-collection-fill text-primary me-2"></i>รายการโครงการ</h5>
                 <button class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#addProjectModal"><i class="bi bi-plus-circle me-1"></i>เพิ่มโครงการใหม่</button>
             </div>
             
-            <div class="bg-light p-2 overflow-auto">
-                <ul class="nav nav-pills flex-nowrap" id="departmentTabs">
+            <div class="bg-light p-2 overflow-auto text-nowrap">
+                <ul class="nav nav-pills" id="departmentTabs">
                     <li class="nav-item"><button class="nav-link active" onclick="filterTable('ทั้งหมด')">ทั้งหมด</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('สำนักงานอำนวยการ')">อำนวยการ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มบริหารงบประมาณ')">งบประมาณ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ วิทยาศาสตร์')">วิทยาศาสตร์</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ คณิตศาสตร์')">คณิตศาสตร์</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ ภาษาไทย')">ภาษาไทย</button></li>
-                    <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ ภาษาต่างประเทศ')">ต่างประเทศ</button></li>
                 </ul>
             </div>
 
@@ -48,11 +47,11 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-4" style="width: 40%;">ชื่อโครงการ / ผู้รับผิดชอบ</th>
-                            <th style="width: 10%;">ปีงบฯ</th>
-                            <th style="width: 15%;">งบประมาณ</th>
-                            <th style="width: 15%;">สถานะ</th>
-                            <th class="text-center" style="width: 20%;">จัดการ</th>
+                            <th class="ps-4">ชื่อโครงการ / ผู้รับผิดชอบ</th>
+                            <th>ปีงบฯ</th>
+                            <th>งบประมาณ</th>
+                            <th>สถานะ</th>
+                            <th class="text-center">การจัดการไฟล์และรายงาน</th>
                         </tr>
                     </thead>
                     <tbody id="projectTableBody"></tbody>
@@ -63,55 +62,52 @@
 
     <div class="modal fade" id="addProjectModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <form id="projectForm" class="modal-content border-0 rounded-4">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title fw-bold">ลงทะเบียนโครงการใหม่</h5>
+            <form id="projectForm" class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-header bg-primary text-white border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>ลงทะเบียนโครงการใหม่</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="row g-3">
-                        <div class="col-md-9"><label class="form-label fw-bold">ชื่อโครงการ / กิจกรรม</label><input type="text" class="form-control" name="Project_Name" placeholder="ระบุชื่อโครงการเต็ม" required></div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">ปีงบประมาณ</label>
-                            <select class="form-select" name="Fiscal_Year"><option value="2569">2569</option><option value="2570">2570</option><option value="2568">2568</option></select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">กลุ่มบริหาร/ฝ่าย</label>
-                            <select class="form-select" name="Department" required>
-                                <option value="" disabled selected>เลือกฝ่าย...</option>
-                                <option value="สำนักงานอำนวยการ">สำนักงานอำนวยการ</option>
-                                <option value="กลุ่มบริหารงบประมาณ">กลุ่มบริหารงบประมาณ</option>
-                                <option value="กลุ่มสาระฯ วิทยาศาสตร์">กลุ่มสาระฯ วิทยาศาสตร์</option>
-                                <option value="กลุ่มสาระฯ คณิตศาสตร์">กลุ่มสาระฯ คณิตศาสตร์</option>
-                                <option value="กลุ่มสาระฯ ภาษาไทย">กลุ่มสาระฯ ภาษาไทย</option>
-                                <option value="กลุ่มสาระฯ ภาษาต่างประเทศ">กลุ่มสาระฯ ภาษาต่างประเทศ</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6"><label class="form-label fw-bold">งบประมาณ (บาท)</label><input type="number" class="form-control" name="Budget_Total" placeholder="0.00" required></div>
-                        <div class="col-12"><label class="form-label fw-bold">ชื่อผู้รับผิดชอบโครงการ</label><input type="text" class="form-control" name="Responsible_Person" placeholder="ระบุชื่อ-นามสกุล" required></div>
-                        <div class="col-12"><label class="form-label text-primary fw-bold"><i class="bi bi-paperclip"></i> แนบไฟล์โครงการต้นฉบับ</label><input type="file" id="attachProjectFile" class="form-control" accept=".pdf,.doc,.docx"></div>
+                        <div class="col-md-9"><label class="form-label fw-bold small text-muted">ชื่อโครงการ / กิจกรรม</label><input type="text" class="form-control bg-light" name="Project_Name" required></div>
+                        <div class="col-md-3"><label class="form-label fw-bold small text-muted">ปีงบประมาณ</label><select class="form-select bg-light" name="Fiscal_Year"><option value="2569">2569</option><option value="2570">2570</option></select></div>
+                        <div class="col-md-6"><label class="form-label fw-bold small text-muted">กลุ่มบริหาร/ฝ่าย</label><select class="form-select bg-light" name="Department" required><option value="สำนักงานอำนวยการ">สำนักงานอำนวยการ</option><option value="กลุ่มบริหารงบประมาณ">กลุ่มบริหารงบประมาณ</option><option value="กลุ่มสาระฯ วิทยาศาสตร์">กลุ่มสาระฯ วิทยาศาสตร์</option></select></div>
+                        <div class="col-md-6"><label class="form-label fw-bold small text-muted">งบประมาณ (บาท)</label><input type="number" class="form-control bg-light" name="Budget_Total" required></div>
+                        <div class="col-12"><label class="form-label fw-bold small text-muted">ชื่อผู้รับผิดชอบโครงการ</label><input type="text" class="form-control bg-light" name="Responsible_Person" required></div>
+                        <div class="col-12"><label class="form-label text-primary fw-bold"><i class="bi bi-paperclip"></i> แนบไฟล์โครงการต้นฉบับ</label><input type="file" id="attachProjectFile" class="form-control border-primary" accept=".pdf,.doc,.docx"></div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light"><button type="submit" id="submitBtn" class="btn btn-primary px-5 rounded-pill fw-bold">บันทึกข้อมูล</button></div>
+                <div class="modal-footer border-0"><button type="submit" id="submitBtn" class="btn btn-primary px-5 rounded-pill fw-bold">บันทึกข้อมูลโครงการ</button></div>
             </form>
         </div>
     </div>
 
     <div class="modal fade" id="reportModal" tabindex="-1">
         <div class="modal-dialog">
-            <form id="reportForm" class="modal-content border-0 rounded-4">
+            <form id="reportForm" class="modal-content border-0 rounded-4 shadow">
                 <input type="hidden" id="report_project_id">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fw-bold">ส่งรายงานผลโครงการ</h5>
+                <div class="modal-header bg-success text-white border-0">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-send-check me-2"></i>ส่งรายงานผลโครงการ</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 text-center">
-                    <p class="mb-1 text-muted">กำลังรายงานโครงการ:</p>
-                    <h6 id="report_project_name" class="fw-bold mb-4 text-dark fs-5">-</h6>
-                    <div class="text-start"><label class="form-label text-success fw-bold">แนบไฟล์รายงานสรุปผล (PDF)</label><input type="file" id="reportFile" class="form-control" accept=".pdf" required></div>
+                    <p class="mb-1 text-muted small">โครงการ:</p>
+                    <h6 id="report_project_name" class="fw-bold mb-4">-</h6>
+                    <div class="text-start"><label class="form-label text-success fw-bold">แนบไฟล์รายงานสรุปผล (PDF)</label><input type="file" id="reportFile" class="form-control border-success" accept=".pdf" required></div>
                 </div>
-                <div class="modal-footer bg-light"><button type="submit" id="reportSubmitBtn" class="btn btn-success px-5 rounded-pill fw-bold">อัปโหลดรายงานสรุป</button></div>
+                <div class="modal-footer border-0"><button type="submit" id="reportSubmitBtn" class="btn btn-success px-5 rounded-pill fw-bold w-100">ยืนยันการส่งรายงาน</button></div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 text-center p-4">
+                <div class="text-success mb-3"><i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i></div>
+                <h5 class="fw-bold" id="successTitle">สำเร็จ!</h5>
+                <p class="text-muted small" id="successMessage">ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว</p>
+                <button type="button" class="btn btn-dark w-100 rounded-pill" data-bs-dismiss="modal">ตกลง</button>
+            </div>
         </div>
     </div>
 
