@@ -5,23 +5,24 @@ let filteredData = [];    // ข้อมูลที่ผ่านการก
 let currentPage = 1;      // หน้าปัจจุบัน
 const rowsPerPage = 10;   // จำนวนรายการต่อหน้า
 
-// 2. ฟังก์ชันดึงข้อมูลจาก Google Sheets มาแสดงผล
+// 2. ฟังก์ชันดึงข้อมูลจาก Google Sheets มาแสดงผล (ปรับปรุงให้แสดงล่าสุดขึ้นก่อน)
 async function fetchDashboardData() {
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         
-        allProjectsData = data.projects;
-        filteredData = [...allProjectsData]; // เริ่มต้นให้ข้อมูลแสดงผลเท่ากับข้อมูลทั้งหมด
+        // แก้ไขจุดนี้: เติม .reverse() ต่อท้าย data.projects
+        allProjectsData = data.projects.reverse(); 
+        filteredData = [...allProjectsData]; 
         
-        // อัปเดตตัวเลขบน Dashboard
+        // อัปเดตตัวเลขบน Dashboard (เหมือนเดิม)
         document.getElementById('totalProjects').innerText = data.summary.totalProjects;
         document.getElementById('reportedCount').innerText = data.summary.reportedCount;
         document.getElementById('pendingCount').innerText = data.summary.pendingCount;
         document.getElementById('totalBudget').innerText = data.summary.totalBudget.toLocaleString();
         
-        updateDisplay(); // เรียกใช้ฟังก์ชันจัดการการแสดงผล
+        updateDisplay(); 
     } catch (e) { 
         console.error("Fetch Error:", e);
         alert("ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต");
