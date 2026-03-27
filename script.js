@@ -184,26 +184,77 @@ document.getElementById('editProjectForm').addEventListener('submit', async (e) 
     } catch (e) { alert("เชื่อมต่อ Server ไม่ได้"); btn.disabled = false; }
 });
 
-// 12. ลบโครงการ
+// 12. ลบโครงการ (เวอร์ชั่นใหม่ สวยงามด้วย SweetAlert2)
 async function handleDelete() {
-    if (!confirm("ยืนยันการลบโครงการนี้?")) return;
     const id = document.getElementById('edit_project_id').value;
     const phone = document.getElementById('edit_auth_phone').value;
-    
-    if(!phone) { alert("กรุณากรอกเบอร์โทรเพื่อยืนยัน"); return; }
 
-    try {
-        const res = await fetch(API_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ action: "deleteProject", Project_ID: id, Auth_Phone: phone }) 
+    // ตรวจสอบก่อนว่ากรอกเบอร์โทรหรือยัง
+    if (!phone) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'กรุณากรอกเบอร์โทรศัพท์',
+            text: 'ต้องระบุเบอร์โทรศัพท์ที่ลงทะเบียนไว้เพื่อยืนยันการลบค่ะ',
+            confirmButtonColor: '#0d47a1'
         });
-        const result = await res.json();
-        if (result.status === "success") {
-            showSuccess("ลบสำเร็จ!", "โครงการถูกลบออกจากระบบแล้ว");
-        } else {
-            alert("ผิดพลาด: " + result.message);
+        return;
+    }
+
+    // แสดง Modal ยืนยันการลบแบบสวยงาม
+    const result = await Swal.fire({
+        title: 'ยืนยันการลบโครงการ?',
+        text: "เมื่อลบแล้วข้อมูลจะหายไปจากระบบและไม่สามารถกู้คืนได้!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33', // สีแดงสำหรับปุ่มลบ
+        cancelButtonColor: '#6e7881',
+        confirmButtonText: 'ใช่, ฉันต้องการลบ',
+        cancelButtonText: 'ยกเลิก',
+        reverseButtons: true // สลับตำแหน่งปุ่มให้ 'ยกเลิก' อยู่ซ้าย
+    });
+
+    // ถ้าผู้ใช้กดตกลง (Confirm)
+    if (result.isConfirmed) {
+        // แสดง Loading ขณะกำลังลบ
+        Swal.fire({
+            title: 'กำลังลบข้อมูล...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const res = await fetch(API_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: "deleteProject", Project_ID: id, Auth_Phone: phone }) 
+            });
+            const responseData = await res.json();
+
+            if (responseData.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ลบสำเร็จ!',
+                    text: 'โครงการถูกลบออกจากระบบเรียบร้อยแล้วค่ะ',
+                    confirmButtonColor: '#0d47a1'
+                }).then(() => {
+                    location.reload(); // รีโหลดหน้าเว็บเมื่อกด OK
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ลบไม่สำเร็จ',
+                    text: responseData.message, // เช่น เบอร์โทรไม่ถูกต้อง
+                    confirmButtonColor: '#0d47a1'
+                });
+            }
+        } catch (e) {
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ในขณะนี้',
+                confirmButtonColor: '#0d47a1'
+            });
         }
-    } catch (e) { alert("ลบข้อมูลไม่สำเร็จ"); }
+    }
 }
 
 // 13. บันทึกโครงการใหม่
