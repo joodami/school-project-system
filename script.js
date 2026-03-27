@@ -1,22 +1,21 @@
 // 1. กำหนดค่าเริ่มต้นและเชื่อมต่อ API
 const API_URL = "https://script.google.com/macros/s/AKfycbzNgRqYHoezZkOvLXD61ZipvbL7Oiv55KWWKFcMreC2Dw7aQoSy77Ae6v1WaB3LdAxYvQ/exec"; 
-let allProjectsData = []; // ข้อมูลต้นฉบับทั้งหมดจาก Server
-let filteredData = [];    // ข้อมูลที่ผ่านการกรอง (ค้นหา/เลือกแท็บ)
-let currentPage = 1;      // หน้าปัจจุบัน
-const rowsPerPage = 10;   // จำนวนรายการต่อหน้า
+let allProjectsData = []; 
+let filteredData = [];    
+let currentPage = 1;      
+const rowsPerPage = 10;   
 
-// 2. ฟังก์ชันดึงข้อมูลจาก Google Sheets มาแสดงผล (ปรับปรุงให้แสดงล่าสุดขึ้นก่อน)
+// 2. ฟังก์ชันดึงข้อมูลจาก Google Sheets
 async function fetchDashboardData() {
     try {
         const response = await fetch(API_URL);
-        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         
-        // แก้ไขจุดนี้: เติม .reverse() ต่อท้าย data.projects
+        // แสดงล่าสุดขึ้นก่อน
         allProjectsData = data.projects.reverse(); 
         filteredData = [...allProjectsData]; 
         
-        // อัปเดตตัวเลขบน Dashboard (เหมือนเดิม)
+        // อัปเดต Dashboard
         document.getElementById('totalProjects').innerText = data.summary.totalProjects;
         document.getElementById('reportedCount').innerText = data.summary.reportedCount;
         document.getElementById('pendingCount').innerText = data.summary.pendingCount;
@@ -25,11 +24,11 @@ async function fetchDashboardData() {
         updateDisplay(); 
     } catch (e) { 
         console.error("Fetch Error:", e);
-        alert("ไม่สามารถโหลดข้อมูลได้ โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต");
+        alert("ไม่สามารถโหลดข้อมูลได้");
     }
 }
 
-// 3. ฟังก์ชันควบคุมการแสดงผลหลัก (ตาราง + Pagination)
+// 3. ควบคุมการแสดงผลหลัก
 function updateDisplay() {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
@@ -38,21 +37,19 @@ function updateDisplay() {
     renderTable(paginatedItems);
     renderPagination();
     
-    // อัปเดตข้อความแสดงจำนวนรายการ (เช่น แสดงรายการที่ 1-10 จาก 50)
     const total = filteredData.length;
-    const infoText = total > 0 
+    document.getElementById('pageInfo').innerText = total > 0 
         ? `แสดงรายการที่ ${startIndex + 1}-${Math.min(endIndex, total)} จาก ${total}`
         : `ไม่พบข้อมูลที่ต้องการ`;
-    document.getElementById('pageInfo').innerText = infoText;
 }
 
-// 4. ฟังก์ชันสร้างแถวในตาราง
+// 4. สร้างแถวในตาราง (เพิ่มปุ่มแก้ไขข้อมูล)
 function renderTable(projects) {
     const tableBody = document.getElementById('projectTableBody');
     tableBody.innerHTML = '';
     
     if (projects.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">ไม่พบข้อมูลโครงการในหมวดนี้</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">ไม่พบข้อมูล</td></tr>';
         return;
     }
 
@@ -61,35 +58,33 @@ function renderTable(projects) {
         const row = `
             <tr>
                 <td class="ps-4">
-                    <div class="fw-bold text-dark" style="font-size: 1rem;">${p.Project_Name}</div>
-                    <small class="text-muted"><i class="bi bi-person me-1"></i>ผู้รับผิดชอบ: ${p.Responsible_Person || '-'}</small>
+                    <div class="fw-bold text-dark">${p.Project_Name}</div>
+                    <small class="text-muted"><i class="bi bi-person me-1"></i>${p.Responsible_Person || '-'}</small>
                 </td>
-                <td data-label="ปีงบประมาณ">
-                    <span class="badge bg-light text-dark border small">${p.Fiscal_Year}</span>
-                </td>
-                <td data-label="งบประมาณ" class="fw-bold text-primary">
-                    ${p.Budget_Total.toLocaleString()} บาท
-                </td>
-                <td data-label="สถานะการดำเนินงาน">
+                <td><span class="badge bg-light text-dark border small">${p.Fiscal_Year}</span></td>
+                <td class="fw-bold text-primary">${p.Budget_Total.toLocaleString()}</td>
+                <td>
                     <span class="badge ${isDone ? 'bg-success' : 'bg-warning text-dark'} shadow-sm">
                         <i class="bi ${isDone ? 'bi-check-circle-fill' : 'bi-clock-history'} me-1"></i>${p.Status}
                     </span>
                 </td>
-                <td data-label="จัดการข้อมูล">
-                    <div class="d-flex flex-column gap-2 align-items-center">
-                        <div class="btn-group w-100 shadow-sm">
-                            <button onclick="window.open('${p.Project_File_URL}', '_blank')" class="btn btn-outline-primary py-2" ${p.Project_File_URL === '-' ? 'disabled' : ''}>
-                                <i class="bi bi-file-earmark-text"></i> ดูแผนโครงการ
+                <td>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="btn-group shadow-sm">
+                            <button onclick="window.open('${p.Project_File_URL}', '_blank')" class="btn btn-sm btn-outline-primary" ${p.Project_File_URL === '-' ? 'disabled' : ''}>
+                                <i class="bi bi-file-earmark-text"></i> แผน
                             </button>
-                            <button onclick="viewPDF('${p.Project_ID}')" class="btn btn-outline-secondary py-2" ${!isDone ? 'disabled' : ''}>
-                                <i class="bi bi-file-earmark-check"></i> ดูรายงานผล
+                            <button onclick="viewPDF('${p.Project_ID}')" class="btn btn-sm btn-outline-secondary" ${!isDone ? 'disabled' : ''}>
+                                <i class="bi bi-file-earmark-check"></i> รายงาน
+                            </button>
+                            <button onclick="openEditModal('${p.Project_ID}')" class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil"></i> แก้ไข
                             </button>
                         </div>
                         ${!isDone ? 
-                            `<button onclick="openReportModal('${p.Project_ID}', '${p.Project_Name}')" class="btn btn-success w-100 rounded-3 py-2 fw-bold shadow-sm">
-                                <i class="bi bi-cloud-upload"></i> กดเพื่อส่งรายงานผลที่นี่
-                            </button>` : 
-                            `<div class="alert alert-success py-2 w-100 mb-0 small fw-bold text-center"><i class="bi bi-patch-check"></i> ส่งรายงานเรียบร้อยแล้ว</div>`
+                            `<button onclick="openReportModal('${p.Project_ID}', '${p.Project_Name}')" class="btn btn-success btn-sm fw-bold">
+                                <i class="bi bi-cloud-upload"></i> ส่งรายงาน
+                            </button>` : ''
                         }
                     </div>
                 </td>
@@ -98,13 +93,12 @@ function renderTable(projects) {
     });
 }
 
-// 5. ฟังก์ชันสร้างปุ่ม Pagination
+// 5. Pagination
 function renderPagination() {
     const wrapper = document.getElementById('paginationWrapper');
     wrapper.innerHTML = '';
     const pageCount = Math.ceil(filteredData.length / rowsPerPage);
-    
-    if (pageCount <= 1) return; // ถ้าข้อมูลน้อยกว่า 1 หน้า ไม่ต้องแสดงปุ่ม
+    if (pageCount <= 1) return;
 
     for (let i = 1; i <= pageCount; i++) {
         const li = document.createElement('li');
@@ -118,81 +112,106 @@ function changePage(page) {
     event.preventDefault();
     currentPage = page;
     updateDisplay();
-    // เลื่อนหน้าจอกลับมาที่ส่วนบนของตารางเพื่อความสะดวก
-    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
 }
 
-// 6. ระบบค้นหา (Search Logic)
+// 6. ค้นหา
 document.getElementById('searchInput').addEventListener('input', function(e) {
     const term = e.target.value.toLowerCase();
-    
-    // ค้นหาจากข้อมูลต้นฉบับ
     filteredData = allProjectsData.filter(p => 
         p.Project_Name.toLowerCase().includes(term) || 
         (p.Responsible_Person && p.Responsible_Person.toLowerCase().includes(term))
     );
-    
-    currentPage = 1; // รีเซ็ตไปหน้า 1 ทุกครั้งที่ค้นหา
+    currentPage = 1;
     updateDisplay();
 });
 
-// 7. ฟังก์ชันกรองข้อมูลตามกลุ่มงาน (Tab Logic)
+// 7. กรองตามกลุ่มงาน
 function filterTable(dept) {
-    // ล้างช่องค้นหาเมื่อมีการสลับแท็บ
     document.getElementById('searchInput').value = '';
-    
-    // อัปเดตสถานะปุ่มเมนู
     document.querySelectorAll('#departmentTabs .nav-link').forEach(b => b.classList.remove('active'));
     if (event) event.target.classList.add('active');
-
-    filteredData = dept === 'ทั้งหมด' 
-        ? allProjectsData 
-        : allProjectsData.filter(p => p.Department === dept);
-    
-    currentPage = 1; // รีเซ็ตไปหน้า 1
+    filteredData = dept === 'ทั้งหมด' ? allProjectsData : allProjectsData.filter(p => p.Department === dept);
+    currentPage = 1;
     updateDisplay();
 }
 
-// 8. ฟังก์ชันเปิด Modal ส่งรายงาน
+// 8. จัดการ Modal ส่งรายงาน
 function openReportModal(id, name) {
     document.getElementById('report_project_id').value = id;
     document.getElementById('report_project_name').innerText = name;
-    const modal = new bootstrap.Modal(document.getElementById('reportModal'));
-    modal.show();
+    new bootstrap.Modal(document.getElementById('reportModal')).show();
 }
 
-// 9. ฟังก์ชันดูไฟล์ PDF รายงาน
+// 9. ดู PDF
 async function viewPDF(id) {
     try {
         const res = await fetch(`${API_URL}?action=viewPDF&projectId=${id}`);
         const url = await res.text();
-        if(url.startsWith("http")) {
-            window.open(url, '_blank');
+        url.startsWith("http") ? window.open(url, '_blank') : alert("ไม่พบไฟล์รายงาน");
+    } catch (e) { alert("เกิดข้อผิดพลาด"); }
+}
+
+// 10. ฟังก์ชันเปิด Modal แก้ไข (ดึงข้อมูลเก่ามาใส่ช่องว่าง)
+function openEditModal(id) {
+    const p = allProjectsData.find(item => item.Project_ID == id);
+    if (!p) return;
+    document.getElementById('edit_project_id').value = p.Project_ID;
+    document.getElementById('edit_name').value = p.Project_Name;
+    document.getElementById('edit_year').value = p.Fiscal_Year;
+    document.getElementById('edit_budget').value = p.Budget_Total;
+    document.getElementById('edit_person').value = p.Responsible_Person;
+    document.getElementById('edit_auth_phone').value = ""; // ล้างเบอร์เก่าทิ้งให้กรอกใหม่
+    new bootstrap.Modal(document.getElementById('editProjectModal')).show();
+}
+
+// 11. บันทึกการแก้ไข
+document.getElementById('editProjectForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('editSubmitBtn');
+    btn.disabled = true;
+    const formData = Object.fromEntries(new FormData(e.target));
+    formData.action = "editProject";
+
+    try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(formData) });
+        const result = await res.json();
+        if (result.status === "success") {
+            showSuccess("แก้ไขสำเร็จ!", "ข้อมูลโครงการได้รับการอัปเดตแล้ว");
         } else {
-            alert("ไม่พบไฟล์รายงานในระบบค่ะ");
+            alert("ผิดพลาด: " + result.message);
+            btn.disabled = false;
         }
-    } catch (e) {
-        alert("เกิดข้อผิดพลาดในการเรียกดูไฟล์");
-    }
+    } catch (e) { alert("เชื่อมต่อ Server ไม่ได้"); btn.disabled = false; }
+});
+
+// 12. ลบโครงการ
+async function handleDelete() {
+    if (!confirm("ยืนยันการลบโครงการนี้?")) return;
+    const id = document.getElementById('edit_project_id').value;
+    const phone = document.getElementById('edit_auth_phone').value;
+    
+    if(!phone) { alert("กรุณากรอกเบอร์โทรเพื่อยืนยัน"); return; }
+
+    try {
+        const res = await fetch(API_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: "deleteProject", Project_ID: id, Auth_Phone: phone }) 
+        });
+        const result = await res.json();
+        if (result.status === "success") {
+            showSuccess("ลบสำเร็จ!", "โครงการถูกลบออกจากระบบแล้ว");
+        } else {
+            alert("ผิดพลาด: " + result.message);
+        }
+    } catch (e) { alert("ลบข้อมูลไม่สำเร็จ"); }
 }
 
-// 10. ฟังก์ชันแสดงการแจ้งเตือนสำเร็จ
-function showSuccess(title, msg) {
-    document.getElementById('successTitle').innerText = title;
-    document.getElementById('successMessage').innerText = msg;
-    const sModal = new bootstrap.Modal(document.getElementById('successModal'));
-    sModal.show();
-    document.getElementById('successModal').addEventListener('hidden.bs.modal', () => {
-        location.reload();
-    });
-}
-
-// 11. การทำงานของฟอร์มเพิ่มโครงการ
+// 13. บันทึกโครงการใหม่
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     btn.disabled = true; 
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>กำลังบันทึก...';
+    btn.innerHTML = 'กำลังบันทึก...';
     
     const data = Object.fromEntries(new FormData(e.target));
     data.action = "addProject";
@@ -200,29 +219,20 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
     const fileInput = document.getElementById('attachProjectFile');
     if(fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        data.projectFile = {
-            base64: await convertFileToBase64(file),
-            type: file.type,
-            name: file.name
-        };
+        data.projectFile = { base64: await convertFileToBase64(file), type: file.type, name: file.name };
     }
     
     try {
         await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-        showSuccess("บันทึกสำเร็จ!", "โครงการใหม่ถูกเพิ่มเข้าสู่ระบบแล้ว");
-    } catch (e) {
-        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-        btn.disabled = false;
-        btn.innerText = "บันทึกโครงการ";
-    }
+        showSuccess("บันทึกสำเร็จ!", "โครงการใหม่ถูกเพิ่มแล้ว");
+    } catch (e) { alert("บันทึกไม่ได้"); btn.disabled = false; }
 });
 
-// 12. การทำงานของฟอร์มส่งรายงาน
+// 14. ส่งรายงานผล
 document.getElementById('reportForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('reportSubmitBtn');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>กำลังอัปโหลด...';
     
     const data = {
         action: "submitReport",
@@ -231,31 +241,29 @@ document.getElementById('reportForm').addEventListener('submit', async (e) => {
     
     const fileInput = document.getElementById('reportFile');
     const file = fileInput.files[0];
-    data.reportFile = {
-        base64: await convertFileToBase64(file),
-        type: file.type,
-        name: file.name
-    };
+    data.reportFile = { base64: await convertFileToBase64(file), type: file.type, name: file.name };
     
     try {
         await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-        showSuccess("ส่งรายงานแล้ว!", "ขอบคุณที่ดำเนินการส่งรายงานตามกำหนดค่ะ");
-    } catch (e) {
-        alert("เกิดข้อผิดพลาดในการอัปโหลดไฟล์");
-        btn.disabled = false;
-        btn.innerText = "ยืนยันการส่งรายงาน";
-    }
+        showSuccess("ส่งรายงานแล้ว!", "อัปโหลดไฟล์เรียบร้อย");
+    } catch (e) { alert("อัปโหลดไม่สำเร็จ"); btn.disabled = false; }
 });
 
-// ฟังก์ชันช่วยแปลงไฟล์เป็น Base64
+// ฟังก์ชันเสริม
+function showSuccess(title, msg) {
+    document.getElementById('successTitle').innerText = title;
+    document.getElementById('successMessage').innerText = msg;
+    new bootstrap.Modal(document.getElementById('successModal')).show();
+    document.getElementById('successModal').addEventListener('hidden.bs.modal', () => location.reload());
+}
+
 function convertFileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = error => reject(error);
+        reader.onerror = e => reject(e);
     });
 }
 
-// เริ่มต้นโหลดข้อมูลเมื่อเปิดหน้าเว็บ
 fetchDashboardData();
