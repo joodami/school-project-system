@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbz2mKTzHIr8r2GFCh4gkkP8MjHLUo-o528cO1vn0cZUTBxcJVWrU9nm64l6aDVrRHP9gw/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbzNgRqYHoezZkOvLXD61ZipvbL7Oiv55KWWKFcMreC2Dw7aQoSy77Ae6v1WaB3LdAxYvQ/exec"; 
 let allProjectsData = [];
 
 async function fetchDashboardData() {
