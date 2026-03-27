@@ -45,43 +45,68 @@ body {
     border-color: #0d47a1;
     box-shadow: 0 4px 10px rgba(13,71,161,0.25); 
 }
-.nav-pills .nav-link:not(.active):hover { 
-    background-color: #e9ecef; 
-    border-color: #ced4da;
+
+/* 5. ตารางข้อมูล (Table) - ส่วนที่ปรับปรุงใหม่ให้สดใสขึ้น */
+.table-responsive {
+    border-radius: 1rem;
+    overflow: hidden; /* เพื่อให้มุมตารางมนตาม Card */
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
 }
 
-/* 5. ตารางข้อมูล (Table) */
-.table { background: white; }
-.table thead th { 
-    background-color: #f8f9fa;
-    border-top: none; 
-    padding: 1.1rem; 
-    color: #636e72; 
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
+.table { 
+    background: white; 
+    margin-bottom: 0;
 }
+
+/* ปรับหัวตาราง Desktop ให้ชัดเจน สดใส */
+.table thead th { 
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important; /* น้ำเงินเข้มไล่เฉดเข้มแข็ง */
+    color: #ffffff !important; 
+    padding: 1.2rem 1rem; 
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: none; /* เอา uppercase ออกเพื่อให้ดูอ่านง่ายขึ้นในภาษาไทย */
+    border: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
 .table tbody td {
-    padding: 1rem;
+    padding: 1.1rem 1rem;
     vertical-align: middle;
+    border-bottom: 1px solid #f1f3f9;
+}
+
+/* เพิ่ม Effect เมื่อเอาเมาส์ชี้แถวตาราง */
+.table tbody tr:hover {
+    background-color: #f8fbff !important;
+    transition: 0.2s;
 }
 
 /* 6. ปุ่มและการจัดการไฟล์ (Buttons) */
 .btn-group .btn { 
-    font-size: 0.8rem; 
+    font-size: 0.85rem; 
     border-radius: 8px !important; 
-    padding: 5px 12px;
+    padding: 6px 14px;
+    transition: 0.2s;
 }
+.btn-outline-primary { border-color: #0d47a1; color: #0d47a1; }
+.btn-outline-primary:hover { background-color: #0d47a1; color: white; }
+
 .btn-primary { background-color: #0d47a1; border-color: #0d47a1; }
-.btn-primary:hover { background-color: #0a3d8d; border-color: #0a3d8d; }
+.btn-primary:hover { background-color: #0a3d8d; border-color: #0a3d8d; transform: translateY(-1px); }
 
 /* 7. หน้าต่างป๊อปอัพ (Modals) */
-.modal-content { border: none; border-radius: 1.25rem; }
-.modal-header { border-radius: 1.25rem 1.25rem 0 0; }
+.modal-content { border: none; border-radius: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.modal-header { 
+    background-color: #f8f9fa;
+    border-radius: 1.25rem 1.25rem 0 0; 
+    border-bottom: 1px solid #eee;
+}
 
 /* 8. ฟอร์มกรอกข้อมูล (Inputs) */
 .form-control, .form-select {
-    padding: 0.6rem 1rem;
+    padding: 0.65rem 1rem;
     border-radius: 10px;
     border: 1px solid #dee2e6;
 }
@@ -92,104 +117,76 @@ body {
 
 /* 9. ป้ายสถานะ (Badges) */
 .badge { 
-    font-weight: 500; 
-    padding: 0.6em 1em; 
+    font-weight: 600; 
+    padding: 0.6em 1.2em; 
     border-radius: 8px; 
     font-size: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* 10. ปรับแต่ง Scrollbar สำหรับเมนูหมวดหมู่บนมือถือ */
-.overflow-auto::-webkit-scrollbar { height: 4px; }
+/* 10. Scrollbar สำหรับมือถือ */
+.overflow-auto::-webkit-scrollbar { height: 5px; }
 .overflow-auto::-webkit-scrollbar-track { background: #f1f1f1; }
-.overflow-auto::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.overflow-auto::-webkit-scrollbar-thumb { background: #0d47a1; border-radius: 10px; }
 
-/* 11. ตกแต่งระบบ Pagination และ Search */
+/* 11. Pagination */
 .pagination .page-link {
     color: #0d47a1;
     border-radius: 8px;
-    margin: 0 3px;
+    margin: 0 4px;
     border: 1px solid #dee2e6;
-    padding: 6px 12px;
-    transition: all 0.2s;
+    padding: 8px 16px;
 }
 .pagination .page-item.active .page-link {
     background-color: #0d47a1;
     border-color: #0d47a1;
-    color: white;
-    box-shadow: 0 3px 6px rgba(13,71,161,0.2);
-}
-#searchInput:focus {
-    background-color: #ffffff !important;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.075), 0 0 0 0.25rem rgba(13,71,161,0.1);
+    box-shadow: 0 4px 8px rgba(13,71,161,0.2);
 }
 
 /* 12. การแสดงผลบนมือถือ (Responsive) */
 @media (max-width: 768px) {
     .main-header h3 { font-size: 1.2rem; }
     .stat-card h2 { font-size: 1.5rem; }
-    .table { font-size: 0.9rem; }
 
-    /* เปลี่ยนตารางเป็นรูปแบบ Card ในมือถือ */
-    .table thead { display: none; }
+    /* ปรับแต่งตารางให้เป็น Card */
+    .table thead { display: none; } /* ซ่อนหัวสีน้ำเงินในมือถือเพื่อประหยัดพื้นที่ */
     .table tbody tr {
         display: block;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.2rem;
         border: 1px solid #e0e0e0;
         border-radius: 1rem;
         background: #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        padding: 10px;
+        padding: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.04);
     }
     .table tbody td {
         display: flex;
         justify-content: space-between;
         align-items: center;
         border: none;
-        padding: 8px 12px !important;
-        text-align: right;
+        padding: 10px 12px !important;
     }
     .table tbody td::before {
         content: attr(data-label);
         font-weight: 700;
-        color: #636e72;
-        text-align: left;
-        flex: 1;
+        color: #495057;
         font-size: 0.85rem;
+        text-align: left;
     }
+    /* แถวแรก (ชื่อโครงการ) ในมือถือให้ดูเด่นขึ้น */
     .table tbody td:first-child {
         display: block;
-        text-align: left;
         background-color: #f8f9fa;
-        border-radius: 0.5rem;
-        margin-bottom: 10px;
-        padding: 12px !important;
+        border-radius: 0.75rem;
+        margin-bottom: 8px;
+        text-align: left;
     }
     .table tbody td:first-child::before { display: none; }
-    .table tbody td:first-child .fw-bold {
-        font-size: 0.95rem;
-        color: #0d47a1;
-    }
+    
     .table tbody td:last-child {
         display: block;
-        text-align: center;
-        border-top: 1px dashed #eee;
-        margin-top: 5px;
+        border-top: 1px dashed #dee2e6;
         padding-top: 15px !important;
     }
-    .btn-group, .btn-group + .btn, .btn-success {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-}
-
-/* ปรับแต่ง Header การ์ดในมือถือ */
-@media (max-width: 576px) {
-    .card-header h6 { font-size: 0.9rem !important; white-space: nowrap; }
-    .btn-sm-custom {
-        font-size: 0.75rem !important;
-        padding: 5px 12px !important;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-    .card-header { padding-left: 10px !important; padding-right: 10px !important; }
+    .btn-group, .btn-success { width: 100% !important; }
 }
