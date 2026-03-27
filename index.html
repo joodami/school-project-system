@@ -14,37 +14,39 @@
         <div class="container">
             <img src="https://raw.githubusercontent.com/joodami/school-assets/main/logo.png" alt="Logo" style="height: 70px;" class="mb-2">
             <h3 class="fw-bold mb-0">ระบบบริหารจัดการและติดตามโครงการ</h3>
-            <p class="opacity-75">โรงเรียนพิมานพิทยาสรรค์ จังหวัดสตูล</p>
+            <p class="opacity-75 mb-0">โรงเรียนพิมานพิทยาสรรค์ จังหวัดสตูล</p>
         </div>
     </div>
 
-    <div class="container py-4">
+    <div class="container py-4 pb-5">
         <div class="row g-3 mb-4 text-center">
-            <div class="col-6 col-md-3"><div class="stat-card bg-primary text-white p-3 rounded-4 shadow-sm h-100"><small>โครงการทั้งหมด</small><h2 id="totalProjects" class="fw-bold mb-0">-</h2></div></div>
-            <div class="col-6 col-md-3"><div class="stat-card bg-success text-white p-3 rounded-4 shadow-sm h-100"><small>รายงานแล้ว</small><h2 id="reportedCount" class="fw-bold mb-0">-</h2></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card bg-primary text-white p-3 rounded-4 shadow-sm h-100"><small class="opacity-75">โครงการทั้งหมด</small><h2 id="totalProjects" class="fw-bold mb-0">-</h2></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card bg-success text-white p-3 rounded-4 shadow-sm h-100"><small class="opacity-75">รายงานแล้ว</small><h2 id="reportedCount" class="fw-bold mb-0">-</h2></div></div>
             <div class="col-6 col-md-3"><div class="stat-card bg-warning text-dark p-3 rounded-4 shadow-sm h-100"><small>รอดำเนินการ</small><h2 id="pendingCount" class="fw-bold mb-0">-</h2></div></div>
-            <div class="col-6 col-md-3"><div class="stat-card bg-info text-white p-3 rounded-4 shadow-sm h-100"><small>งบประมาณรวม</small><h2 id="totalBudget" class="fw-bold mb-0">-</h2></div></div>
+            <div class="col-6 col-md-3"><div class="stat-card bg-info text-white p-3 rounded-4 shadow-sm h-100"><small class="opacity-75">งบประมาณรวม</small><h2 id="totalBudget" class="fw-bold mb-0">-</h2></div></div>
         </div>
 
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center border-bottom">
                 <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-collection-fill text-primary me-2"></i>รายการโครงการ</h5>
-                <button class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#addProjectModal"><i class="bi bi-plus-circle me-1"></i>เพิ่มโครงการใหม่</button>
+                <button class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#addProjectModal">
+                    <i class="bi bi-plus-circle me-1"></i> เพิ่มโครงการใหม่
+                </button>
             </div>
             
-            <div class="bg-light p-2 overflow-auto text-nowrap">
-                <ul class="nav nav-pills" id="departmentTabs">
+            <div class="bg-light p-2 overflow-auto text-nowrap border-bottom">
+                <ul class="nav nav-pills" id="departmentTabs" style="flex-wrap: nowrap;">
                     <li class="nav-item"><button class="nav-link active" onclick="filterTable('ทั้งหมด')">ทั้งหมด</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มบริหารวิชาการ')">วิชาการ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มบริหารงบประมาณ')">งบประมาณ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มบริหารงานบุคคล')">บุคคล</button></li>
-                    <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มบริหารทั่วไป')">บริหารทั่วไป</button></li>
+                    <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มบริหารทั่วไป')">บริหารทั่วไป</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มกิจการนักเรียน')">กิจการนักเรียน</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('สำนักงานอำนวยการ')">อำนวยการ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ วิทยาศาสตร์')">วิทยาศาสตร์</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ คณิตศาสตร์')">คณิตศาสตร์</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ ภาษาไทย')">ภาษาไทย</button></li>
-                    <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ ภาษาต่างประเทศ')">ภาษาต่างประเทศ</button></li>
+                    <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ ภาษาต่างประเทศ')">ต่างประเทศ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ สังคมศึกษา')">สังคมศึกษา</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ ศิลปะ')">ศิลปะ</button></li>
                     <li class="nav-item"><button class="nav-link" onclick="filterTable('กลุ่มสาระฯ การงานอาชีพ')">การงานอาชีพ</button></li>
@@ -61,16 +63,17 @@
                             <th>ปีงบฯ</th>
                             <th>งบประมาณ</th>
                             <th>สถานะ</th>
-                            <th class="text-center">การจัดการไฟล์และรายงาน</th>
+                            <th class="text-center">จัดการไฟล์และรายงาน</th>
                         </tr>
                     </thead>
-                    <tbody id="projectTableBody"></tbody>
+                    <tbody id="projectTableBody">
+                        </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="addProjectModal" tabindex="-1">
+    <div class="modal fade" id="addProjectModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form id="projectForm" class="modal-content border-0 rounded-4 shadow">
                 <div class="modal-header bg-primary text-white border-0">
@@ -104,16 +107,18 @@
                         </div>
                         <div class="col-md-6"><label class="form-label fw-bold small text-muted">งบประมาณ (บาท)</label><input type="number" class="form-control bg-light" name="Budget_Total" required></div>
                         <div class="col-12"><label class="form-label fw-bold small text-muted">ชื่อผู้รับผิดชอบโครงการ</label><input type="text" class="form-control bg-light" name="Responsible_Person" required></div>
-                        <div class="col-12"><label class="form-label text-primary fw-bold"><i class="bi bi-paperclip"></i> แนบไฟล์โครงการต้นฉบับ</label><input type="file" id="attachProjectFile" class="form-control border-primary" accept=".pdf,.doc,.docx"></div>
+                        <div class="col-12"><label class="form-label text-primary fw-bold small"><i class="bi bi-paperclip"></i> แนบไฟล์แผนโครงการ (PDF/Docx)</label><input type="file" id="attachProjectFile" class="form-control border-primary" accept=".pdf,.doc,.docx"></div>
                     </div>
                 </div>
-                <div class="modal-footer border-0"><button type="submit" id="submitBtn" class="btn btn-primary px-5 rounded-pill fw-bold">บันทึกข้อมูลโครงการ</button></div>
+                <div class="modal-footer border-0">
+                    <button type="submit" id="submitBtn" class="btn btn-primary px-5 rounded-pill fw-bold">บันทึกโครงการ</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <div class="modal fade" id="reportModal" tabindex="-1">
-        <div class="modal-dialog">
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <form id="reportForm" class="modal-content border-0 rounded-4 shadow">
                 <input type="hidden" id="report_project_id">
                 <div class="modal-header bg-success text-white border-0">
@@ -121,21 +126,26 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 text-center">
-                    <p class="mb-1 text-muted small">โครงการ:</p>
-                    <h6 id="report_project_name" class="fw-bold mb-4">-</h6>
-                    <div class="text-start"><label class="form-label text-success fw-bold">แนบไฟล์รายงานสรุปผล (PDF)</label><input type="file" id="reportFile" class="form-control border-success" accept=".pdf" required></div>
+                    <p class="mb-1 text-muted small">โครงการที่เลือก:</p>
+                    <h6 id="report_project_name" class="fw-bold mb-4 text-success">-</h6>
+                    <div class="text-start">
+                        <label class="form-label text-success fw-bold small">แนบไฟล์รายงานสรุปผล (PDF เท่านั้น)</label>
+                        <input type="file" id="reportFile" class="form-control border-success" accept=".pdf" required>
+                    </div>
                 </div>
-                <div class="modal-footer border-0"><button type="submit" id="reportSubmitBtn" class="btn btn-success px-5 rounded-pill fw-bold w-100">ยืนยันการส่งรายงาน</button></div>
+                <div class="modal-footer border-0">
+                    <button type="submit" id="reportSubmitBtn" class="btn btn-success rounded-pill fw-bold w-100 py-2">ยืนยันการส่งรายงาน</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 rounded-4 text-center p-4">
                 <div class="text-success mb-3"><i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i></div>
                 <h5 class="fw-bold" id="successTitle">สำเร็จ!</h5>
-                <p class="text-muted small" id="successMessage">ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว</p>
+                <p class="text-muted small" id="successMessage">ข้อมูลถูกบันทึกเรียบร้อยแล้ว</p>
                 <button type="button" class="btn btn-dark w-100 rounded-pill" data-bs-dismiss="modal">ตกลง</button>
             </div>
         </div>
